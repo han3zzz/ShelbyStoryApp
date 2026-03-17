@@ -30,6 +30,10 @@ const limiter = rateLimit({
 app.use("/upload", limiter);
 app.use("/comment", limiter);
 app.use("/react", limiter);
+app.use(express.static(path.join(__dirname, "../")));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../index.html"));
+});
 app.use((err: any, req: any, res: any, next: any) => {
   res.status(500).json({
     success: false,
