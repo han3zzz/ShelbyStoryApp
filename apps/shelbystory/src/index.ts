@@ -4,7 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
-
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { Account, AccountAddress, Ed25519PrivateKey, Network } from "@aptos-labs/ts-sdk";
 import { ShelbyNodeClient } from "@shelby-protocol/sdk/node";
@@ -30,7 +31,14 @@ const limiter = rateLimit({
 app.use("/api/upload", limiter);
 app.use("/api/comment", limiter);
 app.use("/api/react", limiter);
+// fix __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// serve static
 app.use(express.static(path.join(__dirname, "../")));
+
+// route /
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../index.html"));
 });
