@@ -85,7 +85,7 @@ let tokenClient;
 window.onload = () => {
 
   tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: "744428807521-87j78tlmar621bvmucj0kmtujfge6ogs.apps.googleusercontent.com",
+    client_id: "735568185958-l76dpbhn8j9v7jj67j2l26m0cf4tm58m.apps.googleusercontent.com",
     scope: "email profile",
     callback: (response) => {
       getUserInfo(response.access_token);
