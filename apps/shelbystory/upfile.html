@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Blob lên Shelby - HTML/JS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1 { text-align: center; color: #333; }
+    input, button {
+      display: block;
+      width: 100%;
+      margin: 15px 0;
+      padding: 12px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    #status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .success { background: #dff0d8; color: #3c763d; }
+    .error { background: #f2dede; color: #a94442; }
+    .uploading { background: #fcf8e3; color: #8a6d3b; }
+  </style>
+</head>
+<body>
+  <h1>📤 Upload File lên Shelby Network</h1>
+
+  <input type="file" id="fileInput" accept="*/*" />
+
+  <button id="uploadBtn" disabled>Upload File</button>
+
+  <div id="status">Chọn file để bắt đầu...</div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const status = document.getElementById('status');
+
+    // Enable button khi có file
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        uploadBtn.disabled = false;
+        status.textContent = `File đã chọn: ${fileInput.files[0].name}`;
+        status.className = '';
+      } else {
+        uploadBtn.disabled = true;
+        status.textContent = 'Chọn file để bắt đầu...';
+      }
+    });
+
+    // Upload khi click button
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      status.textContent = 'Đang upload... (có thể mất vài giây tùy kích thước file)';
+      status.className = 'uploading';
+      uploadBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Lỗi ${response.status}`);
+        }
+
+        const data = await response.json();
+        status.innerHTML = `
+          Thành công!<br>
+          Blob Name: <strong>${data.blobName}</strong><br>
+          (Kiểm tra console để xem chi tiết)
+        `;
+        status.className = 'success';
+        console.log('Upload result:', data);
+      } catch (error) {
+        status.textContent = `Lỗi: ${error.message}`;
+        status.className = 'error';
+        console.error('Upload error:', error);
+      } finally {
+        uploadBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

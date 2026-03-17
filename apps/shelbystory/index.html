@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ShelbyStory - Share your moment</title>
+<link rel="icon" href="./logo.png" type="image/png">
+<link rel="stylesheet" href="./style.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://kit.fontawesome.com/36cdc549b2.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">ShelbyStory</div>
+  <div class="swipe-hints">
+
+  <div class="swipe up">
+    <div class="arrow">↑</div>
+    <span>Scroll up</span>
+  </div>
+  </div>
+  <div class="top-actions">
+     <div class="action-row">
+    <button class="wallet-btn" id="upStory"><i class="fa-solid fa-upload"></i> Up Story</button>
+    <button class="wallet-btn" id="btnStory" onclick="myStory()"><i class="fa-solid fa-bookmark"></i> My Story</button>
+    </div>
+    <div class="action-row">
+    <button class="wallet-btn" id="btnNofi" onclick="toggleNotify()"><i class="fa-regular fa-bell"></i></button>
+  <button class="wallet-btn" id="connect" >Connect Account</button>
+  </div>
+  </div>
+  
+</header>
+<div id="feed-loading">
+  <div class="feed-loading-box">
+    
+    <div class="feed-loader">
+      <div class="feed-heart">❤</div>
+    </div>
+
+    <div class="feed-loading-text">
+      Wait a moment<span id="loadingDots"></span>
+    </div>
+
+  </div>
+</div>
+<div class="feed" id="feed">
+
+
+</div>
+
+<div class="swipe-hints">
+  <div class="swipe down">
+    <span>Scroll down</span>
+    <div class="arrow">↓</div>
+  </div>
+
+</div>
+
+
+<div class="credit">
+  Developed by <a class="author" href="https://x.com/jackhan_mmo">JackHan</a> & All Data stored on <a class="shelby" href="https://shelby.xyz/">Shelby</a>
+</div>
+<div class="story-modal-overlay" id="storyModal">
+
+  <div class="story-modal-box">
+
+    <span class="story-modal-close" id="storyCloseBtn">✕</span>
+
+    <h2 class="story-modal-title">Upload Story</h2>
+
+    <!-- preview upload -->
+    <div class="story-upload-area">
+
+      <input
+        type="file"
+        id="storyFileInput"
+        class="story-file-hidden"
+        accept="image/*,video/*"
+      >
+
+      <div class="story-preview-box" id="storyPreviewBox">
+
+        <img
+          src="upload-placeholder.png"
+          id="storyPreviewImage"
+          class="story-preview-image"
+        >
+
+        <video
+          id="storyPreviewVideo"
+          class="story-preview-video"
+          controls
+          style="display:none"
+        ></video>
+
+        <div class="story-upload-text">
+          Click to upload
+        </div>
+
+      </div>
+
+    </div>
+
+    <textarea
+      id="storyCaption"
+      class="story-caption"
+      placeholder="Write a caption..."
+    ></textarea>
+
+    <button class="story-upload-btn" id="story-upload-btn">
+      Upload
+    </button>
+
+  </div>
+
+</div>
+<div class="post-status-box" id="postStatus">
+  <div class="post-status-content">
+    <div class="post-spinner"></div>
+    <p id="postStatusText">Uploading Story...</p>
+  </div>
+</div>
+
+<div class="comment-panel" id="commentPanel">
+
+  <div class="comment-header">
+    <span class="comment-close" onclick="closeComment()">✕</span>
+    Comments
+    
+  </div>
+
+  <div id="comment-list" class="comment-list">
+
+
+  </div>
+  
+  <div id="commentsend">
+
+  </div>
+  
+
+</div>
+<div id="storyWrapper">
+   
+  <div id="myStoryPage">
+
+    <div class="myStoryHeader">
+      <button onclick="closeMyStory()">←</button>
+      <span>My Story</span>
+    </div>
+    <div class="swipe up">
+    <div class="arrow">↑</div>
+    <span>Scroll up</span>
+  </div>
+    <div id="myStoryList" class="myStoryList"></div>
+    <div class="hi"></div>
+<div class="swipe-hints">
+  <div class="swipe down">
+    <span>Scroll down</span>
+    <div class="arrow">↓</div>
+  </div>
+  </div>
+
+</div>
+<div class="notify-wrapper">
+
+
+  <div id="notifyBox">
+
+    <div class="notify-header">Notifications</div>
+
+    <div id="notifyList"></div>
+
+  </div>
+
+</div>
+<script src="./index.js"></script>
+</body>
+</html>
