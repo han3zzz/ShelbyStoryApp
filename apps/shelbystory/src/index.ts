@@ -21,7 +21,7 @@ const SECRET = process.env.JWT_SECRET;
 const TIME_TO_LIVE = 30 * 24 * 60 * 60 * 1_000_000
 const limiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 2,
+  max: 20,
   handler: (req, res) => {
     res.status(429).json({
       error: "Too many requests, chill bro 😅"
