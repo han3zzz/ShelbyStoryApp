@@ -1269,7 +1269,7 @@ credit .author{
    VERY SMALL MOBILE
 ========================= */
 
-@media (max-width:400px){
+@media (max-width:420px){
 
   .navbar{
     padding:8px 10px;
@@ -1313,7 +1313,7 @@ credit .author{
   }
 
   .swipe.down{
-    bottom:90px;
+    bottom:120px;
   }
 
   .credit{
