@@ -3,7 +3,7 @@
 
 async function loadPosts(){
   document.getElementById("feed-loading").style.display = "flex";
-  const res = await fetch("http://localhost:3000/feed")
+  const res = await fetch("/api/feed")
 
   const data = await res.json()
   const posts = data.posts
@@ -160,7 +160,7 @@ async function getUserInfo(token){
   const data = await res.json();
 
   /* gửi email lên backend */
-  const loginRes = await fetch("http://localhost:3000/login",{
+  const loginRes = await fetch("/api/login",{
     method:"POST",
     headers:{
       "Content-Type":"application/json"
@@ -314,7 +314,7 @@ fileInput.onchange = () => {
       formData.append('caption',captionStory);
       formData.append("author",authorStory);
       try {
-        const response = await fetch('http://localhost:3000/upload', {
+        const response = await fetch('/api/upload', {
           method: 'POST',
           headers:{
           Authorization:"Bearer "+token
@@ -396,7 +396,7 @@ const statusText = document.getElementById("postStatusText")
       const type = checkliked ? "unlike" : "like"
       formData.append("type",type);
       try {
-        const response = await fetch('http://localhost:3000/react', {
+        const response = await fetch('/api/react', {
           method: 'POST',
           headers:{
           Authorization:"Bearer "+token
@@ -461,7 +461,7 @@ const statusText = document.getElementById("postStatusText")
       formData.append("text",text);
       formData.append("id",id);
       try {
-        const response = await fetch('http://localhost:3000/comment', {
+        const response = await fetch('/api/comment', {
           method: 'POST',
           headers:{
           Authorization:"Bearer "+token
@@ -511,7 +511,7 @@ const statusText = document.getElementById("postStatusText")
   document.getElementById("commentsend").innerHTML = '';
     const panel = document.getElementById("commentPanel");
   panel.classList.toggle("show");
-  const res = await fetch("http://localhost:3000/getcomment/"+id)
+  const res = await fetch("/api/getcomment/"+id)
 
   const posts = await res.json()
   
@@ -561,7 +561,7 @@ const statusText = document.getElementById("postStatusText")
  }
  async function resetComment(id){
   document.getElementById("commentsend").innerHTML = '';
-    const res = await fetch("http://localhost:3000/getcomment/"+id)
+    const res = await fetch("/api/getcomment/"+id)
 
   const posts = await res.json()
   
@@ -730,7 +730,7 @@ function closeMyStory(){
 }
 async function myStory(){
   document.getElementById("myStoryPage").classList.add("open")
-  const res = await fetch("http://localhost:3000/feed")
+  const res = await fetch("/api/feed")
 
 const data = await res.json()
 
@@ -835,7 +835,7 @@ async function toggleNotify(){
       authorStory = user;
     }
 
-  const res = await fetch("http://localhost:3000/feed")
+  const res = await fetch("/api/feed")
   const data = await res.json()
 
   const posts = data.posts
