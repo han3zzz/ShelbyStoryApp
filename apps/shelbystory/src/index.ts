@@ -74,6 +74,10 @@ function createTime(){
   return Date.now()  +"_"+ crypto.randomUUID().slice(0,6)
 
 }
+app.get("/api/ping", async (req, res) => {
+   console.log("ping");
+   res.send("pong");
+});
 
 
 app.post("/api/upload",verifyToken, upload.single("file"), async (req, res) => {
