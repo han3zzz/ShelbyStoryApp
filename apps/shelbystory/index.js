@@ -382,6 +382,7 @@ const statusText = document.getElementById("postStatusText")
     if (user !== null) {
       authorStory = user;
     }
+   const token1 = localStorage.getItem("token");
          const formData = new FormData();
       formData.append("id",id);
       formData.append("author",authorStory);
@@ -399,7 +400,7 @@ const statusText = document.getElementById("postStatusText")
         const response = await fetch('/api/react', {
           method: 'POST',
           headers:{
-          Authorization:"Bearer "+token
+          Authorization:"Bearer "+token1
           },
           body: formData,
           
@@ -440,7 +441,7 @@ const statusText = document.getElementById("postStatusText")
          let authorStory = "";
 
     const user = localStorage.getItem("user");
- 
+    const token1 = localStorage.getItem("token");
     authorStory = user;
          const text = document.getElementById("commentText").value;
          const sendCommentBtn = document.getElementById("sendComment");
@@ -464,7 +465,7 @@ const statusText = document.getElementById("postStatusText")
         const response = await fetch('/api/comment', {
           method: 'POST',
           headers:{
-          Authorization:"Bearer "+token
+          Authorization:"Bearer "+token1
           },
           body: formData
         });
