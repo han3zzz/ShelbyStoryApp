@@ -27,9 +27,9 @@ const limiter = rateLimit({
     });
   }
 });
-app.use("/upload", limiter);
-app.use("/comment", limiter);
-app.use("/react", limiter);
+app.use("/api/upload", limiter);
+app.use("/api/comment", limiter);
+app.use("/api/react", limiter);
 app.use(express.static(path.join(__dirname, "../")));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../index.html"));
@@ -68,7 +68,7 @@ function createTime(){
 }
 
 
-app.post("/upload",verifyToken, upload.single("file"), async (req, res) => {
+app.post("/api/upload",verifyToken, upload.single("file"), async (req, res) => {
   try {
 
     const file = req.file;
@@ -169,7 +169,7 @@ app.listen(3000, () => {
   console.log("API running on http://localhost:3000");
 });
 
-app.get("/list", async (req, res) => {
+app.get("/api/list", async (req, res) => {
  const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
  
  // 3) Ask Shelby for a list of the account's blobs.
@@ -197,7 +197,7 @@ console.log(data);
 res.json(result);
 
 });
-app.get("/getReact", async (req, res) => {
+app.get("/api/getReact", async (req, res) => {
  const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
  
  // 3) Ask Shelby for a list of the account's blobs.
@@ -232,7 +232,7 @@ console.log(data);
 res.json(result);
 
 });
-app.post("/react",verifyToken,upload.single("file"), async (req, res) => {
+app.post("/api/react",verifyToken,upload.single("file"), async (req, res) => {
   try {
     const author = (req as any).user.email.email;
     const id = req.body.id;
@@ -268,7 +268,7 @@ const jsonBytes = encoder.encode(jsonString);
     res.status(500).json({ error: "React failed" });
   }
 });
-app.post("/comment",verifyToken,upload.single("file"), async (req, res) => {
+app.post("/api/comment",verifyToken,upload.single("file"), async (req, res) => {
   
   try {
     const author = (req as any).user.email.email;
@@ -327,7 +327,7 @@ const jsonBytes = encoder.encode(jsonString);
     res.status(500).json({ error: "React failed" });
   }
 });
-app.get("/getcomment/:id", async (req, res) => {
+app.get("/api/getcomment/:id", async (req, res) => {
  const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
   const id = req.params.id;
  // 3) Ask Shelby for a list of the account's blobs.
@@ -366,7 +366,7 @@ const posts = blobs
 
 
 });
-app.get("/feed", async (req, res) => {
+app.get("/api/feed", async (req, res) => {
   try {
 
     const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS)
@@ -416,7 +416,7 @@ app.get("/feed", async (req, res) => {
 
   }
 })
-app.post("/login",upload.single("file"), (req, res) => {
+app.post("/api/login",upload.single("file"), (req, res) => {
 
   const  email = req.body;
    console.log(email)
