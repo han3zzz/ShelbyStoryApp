@@ -1,7 +1,8 @@
 # Shelby Story App - Dev by JackHan
 
 This application allows users to share their moments with others. All content and data are securely stored on the Shelby network.
-Demo : <a href="https://shelbystoryapp.onrender.com" </a>
+
+Demo : https://shelbystoryapp.onrender.com
 ## Prerequisites
 
 - Node.js >= 22
