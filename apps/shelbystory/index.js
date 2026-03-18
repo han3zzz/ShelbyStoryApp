@@ -896,7 +896,7 @@ async function toggleNotify(){
     }
 
   })
-
+  notifications.sort((a, b) => Number(b.time) - Number(a.time))
   // clear
   notifyList.innerHTML = ""
 
