@@ -1111,7 +1111,7 @@ credit .author{
 }
 /* mặc định desktop giữ nguyên */
 .menu-toggle{
-  display: none !important;
+  display: none;
 }
 /* =========================
    TABLET
