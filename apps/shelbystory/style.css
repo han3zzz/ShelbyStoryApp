@@ -1206,6 +1206,10 @@ credit .author{
   gap:15px;
   padding-top: 80px;
 }
+  .content {
+   padding-bottom: 50px;
+
+  }
 
   .top-actions.active{
     right:0;
@@ -1254,7 +1258,10 @@ credit .author{
     padding:10px 12px;
     justify-content:space-between; /* logo trái - nút phải */
   }
+  .content {
+   padding-bottom: 50px;
 
+  }
   /* nhóm nút trên navbar */
 
   .top-actions{
@@ -1460,6 +1467,10 @@ credit .author{
     padding-top: 15px;
     font-size:16px;
     z-index: 1001;
+  }
+  .content {
+   padding-bottom: 50px;
+
   }
 
   .top-actions{
