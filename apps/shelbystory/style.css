@@ -1211,7 +1211,7 @@ credit .author{
   padding-top: 80px;
 }
   .content {
-   padding-bottom: 180px;
+   padding-bottom: 200px;
    padding-top: 100px;
   }
 
@@ -1263,7 +1263,7 @@ credit .author{
     justify-content:space-between; /* logo trái - nút phải */
   }
   .content {
-   padding-bottom: 180px;
+   padding-bottom: 200px;
     padding-top: 100px;
 
   }
@@ -1481,7 +1481,7 @@ credit .author{
     z-index: 1001;
   }
   .content {
-   padding-bottom: 180px;
+   padding-bottom: 200px;
     padding-top: 100px;
 
   }
