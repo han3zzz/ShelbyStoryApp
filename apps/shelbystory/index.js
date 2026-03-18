@@ -108,7 +108,7 @@ const Menubtn = document.getElementById("btnMenu");
 storyBtn.style.display = "none";
 myStoryy.style.display = "none";
 Nofibtn.style.display = "none";
-Menubtn.style.display = "none";
+Menubtn.classList.add("hidden");
 document.getElementById("connect").onclick = () => {
 
   const savedUser = localStorage.getItem("user");
@@ -135,7 +135,7 @@ document.getElementById("connect").onclick = () => {
       storyBtn.style.display = "none";
       myStoryy.style.display = "none";
       Nofibtn.style.display = "none";
-      Menubtn.style.display = "none";
+      Menubtn.classList.add("hidden");
       document.getElementById("commentsend").innerHTML = '';
     
   }
@@ -194,7 +194,7 @@ function showUser(user) {
       storyBtn.style.display = "block";
       myStoryy.style.display = "block";
       Nofibtn.style.display = "block";
-      Menubtn.style.display = "block";
+      Menubtn.classList.remove("hidden");
 }
 
 
