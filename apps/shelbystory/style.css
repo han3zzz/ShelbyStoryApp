@@ -1125,6 +1125,9 @@ credit .author{
   .media{
     height:320px;
   }
+  .hidden {
+  display: none !important;
+}
 
   .caption{
     font-size:16px;
@@ -1156,7 +1159,7 @@ credit .author{
 /* swipe down */
 
 .swipe.down{
-  bottom:140px;
+  bottom:130px;
 }
 .menu-toggle{
     display:block;
@@ -1208,7 +1211,7 @@ credit .author{
   padding-top: 80px;
 }
   .content {
-   padding-bottom: 100px;
+   padding-bottom: 140px;
    padding-top: 100px;
   }
 
@@ -1260,10 +1263,13 @@ credit .author{
     justify-content:space-between; /* logo trái - nút phải */
   }
   .content {
-   padding-bottom: 100px;
+   padding-bottom: 140px;
     padding-top: 100px;
 
   }
+  .hidden {
+  display: none !important;
+}
   /* nhóm nút trên navbar */
 
   .top-actions{
@@ -1311,7 +1317,7 @@ credit .author{
 /* swipe down */
 
 .swipe.down{
-  bottom:140px;
+  bottom:130px;
 }
 .menu-toggle{
     display:block;
@@ -1475,10 +1481,13 @@ credit .author{
     z-index: 1001;
   }
   .content {
-   padding-bottom: 100px;
+   padding-bottom: 140px;
     padding-top: 100px;
 
   }
+  .hidden {
+  display: none !important;
+}
   .comment-panel{
     width:300px;
     height: 100dvh;
@@ -1518,7 +1527,7 @@ credit .author{
   }
 
   .swipe.down{
-  bottom:140px;
+  bottom:130px;
 }
 .menu-toggle{
     display:block;
