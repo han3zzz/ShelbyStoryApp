@@ -14,7 +14,7 @@
 <body>
 
 <header class="navbar">
-  <div class="logo">ShelbyStory</div>
+   <div class="logo"><a href="/">ShelbyStory</a></div>
   <div class="swipe-hints">
 
   <div class="swipe up">
@@ -22,14 +22,20 @@
     <span>Scroll up</span>
   </div>
   </div>
-  <div class="top-actions">
+  <div class="top-bar">
+    <div class="top-actions">
      <div class="action-row">
     <button class="wallet-btn" id="upStory"><i class="fa-solid fa-upload"></i> Up Story</button>
     <button class="wallet-btn" id="btnStory" onclick="myStory()"><i class="fa-solid fa-bookmark"></i> My Story</button>
     </div>
-    <div class="action-row">
+   
+  </div>
+  <div class="top-actions1">
+    <button class="wallet-btn" id="connect" >Connect Account</button>
     <button class="wallet-btn" id="btnNofi" onclick="toggleNotify()"><i class="fa-regular fa-bell"></i></button>
-  <button class="wallet-btn" id="connect" >Connect Account</button>
+      <button class="menu-toggle" onclick="toggleMenu()">
+  <i class="fa-solid fa-bars"></i>
+</button>
   </div>
   </div>
   
