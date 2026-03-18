@@ -940,3 +940,38 @@ async function toggleNotify(){
 function closeComment(){
   document.getElementById("commentPanel").classList.remove("show");
 }
+function toggleMenu(){
+const menu = document.querySelector(".top-actions");
+  const isOpen = menu.classList.toggle("active");
+   const btnIcon = document.querySelector(".menu-toggle i");
+  const btnConnect = document.getElementById("connect");
+  const btnNofi = document.getElementById("btnNofi");
+  if(isOpen){
+    btnIcon.classList.remove("fa-bars");
+    btnIcon.classList.add("fa-xmark");
+    btnConnect.style.display = "none";
+    btnNofi.style.display = "none";
+    btnConnect.style.transition = "all 0.5s ease";
+    btnNofi.style.transition = "all 0.5s ease";
+  }else{
+    btnIcon.classList.remove("fa-xmark");
+    btnIcon.classList.add("fa-bars");
+    btnConnect.style.display = "block";
+    btnNofi.style.display = "block";
+    btnConnect.style.transition = "all 0.5s ease";
+    btnNofi.style.transition = "all 0.5s ease";
+  }
+  document.querySelectorAll(".swipe").forEach(el => {
+  el.style.transition = "all 0.3s ease";
+
+  if(isOpen){
+    el.style.opacity = "0";
+    el.style.transform = "translateX(-50%) translateY(15px)"; // ✅ giữ căn giữa
+    el.style.pointerEvents = "none";
+  }else{
+    el.style.opacity = "1";
+    el.style.transform = "translateX(-50%) translateY(0)";
+    el.style.pointerEvents = "auto";
+  }
+});
+}
