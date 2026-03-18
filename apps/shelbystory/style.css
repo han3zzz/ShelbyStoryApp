@@ -1142,7 +1142,7 @@ credit .author{
 
   .comment-panel{
     width:300px;
-    height: auto;
+    height:100vh;
   }
 
   .story-modal-box{
@@ -1454,7 +1454,7 @@ credit .author{
 }
   .comment-panel{
     width:300px;
-    height: auto;
+    height:100vh;
   }
 
 }
@@ -1481,7 +1481,7 @@ credit .author{
   }
   .comment-panel{
     width:300px;
-    height: auto;
+    height:100vh;
   }
 
   .top-actions{
