@@ -796,7 +796,7 @@ credit .author{
 }
 /* loading */
 .like.loading{
-  pointer-events:none;
+  pointer-events:auto;
  
 }
 .like.loading span{
