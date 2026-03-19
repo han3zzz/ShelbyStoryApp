@@ -410,7 +410,7 @@ const statusText = document.getElementById("postStatusText")
           
 
         });
-        reloadAssets();
+        
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -433,7 +433,7 @@ const statusText = document.getElementById("postStatusText")
       total.innerText = Number(totalnow)-1
     }
         const data = await response.json();
-         
+         reloadAssets();
             
         }catch(e){
             
