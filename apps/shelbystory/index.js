@@ -350,6 +350,7 @@ fileInput.onchange = () => {
                 // 🔥 RESET UI
         document.getElementById("storyFileInput").value = "";
         document.getElementById("storyCaption").value = "";
+        reloadAssets();
 
         const img = document.getElementById("storyPreviewImage");
         const video = document.getElementById("storyPreviewVideo");
@@ -409,6 +410,7 @@ const statusText = document.getElementById("postStatusText")
           
 
         });
+        reloadAssets();
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -489,7 +491,7 @@ const statusText = document.getElementById("postStatusText")
         const data = await response.json();
          Swal.close();
          Swal.fire({
-            title: "Upload Success !",
+            title: "Comment Success !",
             icon: "success",
             customClass:{
             container:"my-swal"
@@ -497,6 +499,7 @@ const statusText = document.getElementById("postStatusText")
           });
           document.getElementById("commentText").value = "";
           resetComment(id);
+          reloadAssets();
             
 
         }catch(e){
@@ -977,4 +980,24 @@ const menu = document.querySelector(".top-actions");
     el.style.pointerEvents = "auto";
   }
 });
+}
+
+function reloadAssets() {
+  const v = Date.now();
+
+  // 🔥 reload CSS
+  document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
+    const href = link.getAttribute("href").split("?")[0];
+    link.setAttribute("href", href + "?v=" + v);
+  });
+
+  // 🔥 reload JS (xóa script cũ + thêm lại)
+  document.querySelectorAll("script[data-reload='true']").forEach(s => s.remove());
+
+  const newScript = document.createElement("script");
+  newScript.src = "./index.js?v=" + v;
+  newScript.defer = true;
+  newScript.setAttribute("data-reload", "true");
+
+  document.body.appendChild(newScript);
 }
