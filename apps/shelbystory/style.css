@@ -1164,7 +1164,7 @@ credit .author{
 /* swipe down */
 
 .swipe.down{
-  bottom:130px;
+  bottom:100px;
 }
 .menu-toggle{
     display:block;
@@ -1215,10 +1215,6 @@ credit .author{
   gap:15px;
   padding-top: 80px;
 }
-  .content {
-   padding-bottom: 140px;
-   padding-top: 110px;
-  }
 
   .top-actions.active{
     right:0;
@@ -1266,11 +1262,6 @@ credit .author{
   .navbar{
     padding:10px 12px;
     justify-content:space-between; /* logo trái - nút phải */
-  }
-  .content {
-   padding-bottom: 140px;
-    padding-top: 110px;
-
   }
    .feed{
   height:100dvh;
@@ -1327,7 +1318,7 @@ credit .author{
 /* swipe down */
 
 .swipe.down{
-  bottom:130px;
+  bottom:100px;
 }
 .menu-toggle{
     display:block;
@@ -1495,11 +1486,6 @@ credit .author{
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
 }
-  .content {
-   padding-bottom: 140px;
-    padding-top: 110px;
-
-  }
   .hidden {
   display: none !important;
 }
@@ -1542,7 +1528,7 @@ credit .author{
   }
 
   .swipe.down{
-  bottom:130px;
+  bottom:100px;
 }
 .menu-toggle{
     display:block;
