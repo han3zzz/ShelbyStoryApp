@@ -1145,6 +1145,10 @@ credit .author{
   .navbar{
     padding:12px 18px;
   }
+  .story-caption{
+  font-size:16px
+
+  }
 
   .wallet-btn{
     padding:7px 14px;
@@ -1278,6 +1282,10 @@ credit .author{
   .actions button.active {
   transform: scale(1) !important;
 }
+  .story-caption{
+  font-size:16px
+
+  }
   .hidden {
   display: none !important;
 }
@@ -1500,6 +1508,10 @@ credit .author{
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
 }
+  .story-caption{
+  font-size:16px
+
+  }
   .actions button.active {
   transform: scale(1) !important;
 }
