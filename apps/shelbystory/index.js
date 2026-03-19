@@ -428,19 +428,17 @@ const statusText = document.getElementById("postStatusText")
       btnLike.classList.add("active")
       total.innerText = Number(totalnow)+1
        heartBurst(btnLike)
-      const post = document.getElementById("feed");
-        post.addEventListener("click", (e) => {
-          console.log("Đã click vào post");
-        });
     }else{
       btnLike.classList.remove("active")
       total.innerText = Number(totalnow)-1
-       const post = document.getElementById("feed");
-        post.addEventListener("click", (e) => {
-          console.log("Đã click vào post");
-        });
     }
         const data = await response.json();
+         const post = document.getElementById("feed");
+       post.addEventListener("click", (e) => {
+          e.stopPropagation();
+        
+          post.click(); // 👉 chạy 1 lần
+        });
          reloadAssets();
             
         }catch(e){
@@ -995,15 +993,15 @@ function reloadAssets() {
 
   // 🔥 reload CSS
   document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
-    const href = link.getAttribute("href").split("?")[0];
-    link.setAttribute("href", href + "?v=" + v);
+    const href = link.getAttribute("href");
+    link.setAttribute("href", href);
   });
 
   // 🔥 reload JS (xóa script cũ + thêm lại)
   document.querySelectorAll("script[data-reload='true']").forEach(s => s.remove());
 
   const newScript = document.createElement("script");
-  newScript.src = "./index.js?v=" + v;
+  newScript.src = "./index.js";
   newScript.defer = true;
   newScript.setAttribute("data-reload", "true");
 
