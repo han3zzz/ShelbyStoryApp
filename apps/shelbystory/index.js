@@ -432,14 +432,9 @@ const statusText = document.getElementById("postStatusText")
       btnLike.classList.remove("active")
       total.innerText = Number(totalnow)-1
     }
+        btnLike.offsetHeight;
         const data = await response.json();
-         const post = document.getElementById("feed");
-       post.addEventListener("click", (e) => {
-          e.stopPropagation();
-        
-          
-        });
-        post.click(); // 👉 chạy 1 lần
+
          reloadAssets();
             
         }catch(e){
