@@ -1128,6 +1128,11 @@ credit .author{
   .hidden {
   display: none !important;
 }
+  .feed{
+  height:100dvh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
 
   .caption{
     font-size:16px;
@@ -1211,8 +1216,8 @@ credit .author{
   padding-top: 80px;
 }
   .content {
-   padding-bottom: 180px;
-   padding-top: 100px;
+   padding-bottom: 140px;
+   padding-top: 110px;
   }
 
   .top-actions.active{
@@ -1263,10 +1268,15 @@ credit .author{
     justify-content:space-between; /* logo trái - nút phải */
   }
   .content {
-   padding-bottom: 180px;
-    padding-top: 100px;
+   padding-bottom: 140px;
+    padding-top: 110px;
 
   }
+   .feed{
+  height:100dvh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
   .hidden {
   display: none !important;
 }
@@ -1479,10 +1489,15 @@ credit .author{
     padding-top: 15px;
     font-size:16px;
     z-index: 1001;
-  }
+  } 
+   .feed{
+  height:100dvh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
   .content {
-   padding-bottom: 180px;
-    padding-top: 100px;
+   padding-bottom: 140px;
+    padding-top: 110px;
 
   }
   .hidden {
