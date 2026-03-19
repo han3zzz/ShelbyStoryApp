@@ -1164,7 +1164,11 @@ credit .author{
 /* swipe down */
 
 .swipe.down{
-  bottom:100px;
+  bottom:60px;
+}
+  .comment-input input{
+
+  font-size : 16px;
 }
 .menu-toggle{
     display:block;
@@ -1318,7 +1322,11 @@ credit .author{
 /* swipe down */
 
 .swipe.down{
-  bottom:100px;
+  bottom:60px;
+}
+  .comment-input input{
+
+  font-size : 16px;
 }
 .menu-toggle{
     display:block;
@@ -1527,8 +1535,12 @@ credit .author{
     top:90px;
   }
 
-  .swipe.down{
-  bottom:100px;
+ .swipe.down{
+  bottom:60px;
+}
+  .comment-input input{
+
+  font-size : 16px;
 }
 .menu-toggle{
     display:block;
