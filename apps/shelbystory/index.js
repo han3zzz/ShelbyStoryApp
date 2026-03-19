@@ -437,8 +437,9 @@ const statusText = document.getElementById("postStatusText")
        post.addEventListener("click", (e) => {
           e.stopPropagation();
         
-          post.click(); // 👉 chạy 1 lần
+          
         });
+        post.click(); // 👉 chạy 1 lần
          reloadAssets();
             
         }catch(e){
