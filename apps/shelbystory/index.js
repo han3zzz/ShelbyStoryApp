@@ -15,7 +15,6 @@ async function loadPosts(){
   feed.innerHTML = ""
 
   for (const post of posts)  {
-    console.log(post);
     const id = post.split("_")[1]
     const url = "https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/" + post.split("_")[1];
     const timee = post.split("_")[2];
