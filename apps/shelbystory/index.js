@@ -433,7 +433,7 @@ const statusText = document.getElementById("postStatusText")
       total.innerText = Number(totalnow)-1
     }
         const data = await response.json();
-
+         btnLike.style.transform = "scale(1)";
          reloadAssets();
             
         }catch(e){
