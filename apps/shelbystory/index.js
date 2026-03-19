@@ -393,6 +393,8 @@ const statusText = document.getElementById("postStatusText")
       const btnLike = document.getElementById("reactBtn_"+id)
       const total = document.getElementById("totalReact_"+id);
       const totalnow = total.textContent;
+       // 👇 quan trọng
+        btnLike.blur();
        // chặn spam click
      if(btnLike.classList.contains("loading")) return
 
