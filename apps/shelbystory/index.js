@@ -428,9 +428,17 @@ const statusText = document.getElementById("postStatusText")
       btnLike.classList.add("active")
       total.innerText = Number(totalnow)+1
        heartBurst(btnLike)
+      const post = document.getElementById("feed");
+        post.addEventListener("click", (e) => {
+          console.log("Đã click vào post");
+        });
     }else{
       btnLike.classList.remove("active")
       total.innerText = Number(totalnow)-1
+       const post = document.getElementById("feed");
+        post.addEventListener("click", (e) => {
+          console.log("Đã click vào post");
+        });
     }
         const data = await response.json();
          reloadAssets();
