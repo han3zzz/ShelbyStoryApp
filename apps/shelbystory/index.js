@@ -350,7 +350,6 @@ fileInput.onchange = () => {
                 // 🔥 RESET UI
         document.getElementById("storyFileInput").value = "";
         document.getElementById("storyCaption").value = "";
-        reloadAssets();
 
         const img = document.getElementById("storyPreviewImage");
         const video = document.getElementById("storyPreviewVideo");
@@ -500,7 +499,6 @@ const statusText = document.getElementById("postStatusText")
           });
           document.getElementById("commentText").value = "";
           resetComment(id);
-          reloadAssets();
             
 
         }catch(e){
