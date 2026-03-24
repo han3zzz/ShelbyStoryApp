@@ -48,7 +48,7 @@ const time = date.toLocaleString("en-US", {
     <section class="post">
 
       <div class="background">
-         <img src="./assets/background.png">
+         <img src="${url}">
       </div>
 
       <div class="content">
