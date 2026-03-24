@@ -47,13 +47,11 @@ const time = date.toLocaleString("en-US", {
     
     <section class="post">
 
-      <div class="background">
-        <img src="${url}">
-      </div>
+      <div class="background" style="background-image:url('${url}')"></div>
 
       <div class="content">
 
-        <img src="${url}" class="media">
+        <img src="${url}" class="media" loading="lazy">
 
         <p class="postby">Posted by ${author} at ${time}</p>
 
