@@ -123,9 +123,19 @@ document.getElementById("connect").onclick = () => {
 }).then((result) => {
 
   if (result.isConfirmed) {
+
     
       localStorage.removeItem("user");
       localStorage.removeItem("token");
+       sessionStorage.clear();
+
+        // 🔥 xoá header nếu có
+        if (window.axios) {
+          delete axios.defaults.headers.common["Authorization"];
+        }
+      
+        // 🔥 reset biến global nếu bạn có
+        window.currentUser = null;
       Swal.fire({
         title: "Logout Success !",
         icon: "success"
