@@ -128,6 +128,7 @@ document.getElementById("connect").onclick = () => {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
        sessionStorage.clear();
+      loadPosts();
 
         // 🔥 xoá header nếu có
         if (window.axios) {
@@ -186,6 +187,7 @@ async function getUserInfo(token){
   
   localStorage.setItem("token",loginData.token);
   localStorage.setItem("user", loginData.email.email);
+  loadPosts();
   Swal.fire({
     title:"Login Success!",
     icon:"success"
