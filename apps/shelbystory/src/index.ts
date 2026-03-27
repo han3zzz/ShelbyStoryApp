@@ -455,7 +455,7 @@ export function verifyToken(req: any, res: any, next: any){
   const authHeader = req.headers.authorization;
 
   if(!authHeader){
-    return res.status(401).json({error:"No token"});
+    return res.status(401).json({error:"You can login!"});
   }
 
   const token = authHeader.split(" ")[1];
@@ -470,7 +470,7 @@ export function verifyToken(req: any, res: any, next: any){
 
   }catch(e){
 
-    res.status(401).json({error:"Invalid token"});
+    res.status(401).json({error:"You can login!"});
 
   }
 
