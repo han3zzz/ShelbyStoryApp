@@ -277,7 +277,7 @@ const jsonBytes = encoder.encode(jsonString);
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "React failed" });
+    res.status(500).json({ error: "React failed! Please try later" });
   }
 });
 app.post("/api/comment",verifyToken,upload.single("file"), async (req, res) => {
@@ -336,7 +336,7 @@ const jsonBytes = encoder.encode(jsonString);
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "React failed" });
+    res.status(500).json({ error: "Comment failed! Please try later" });
   }
 });
 app.get("/api/getcomment/:id", async (req, res) => {
