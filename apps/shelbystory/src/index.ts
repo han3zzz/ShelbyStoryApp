@@ -308,6 +308,12 @@ app.post("/api/comment",verifyToken,upload.single("file"), async (req, res) => {
 
     // ❌ chống spam ký tự rác
     const cleanText = text.trim();
+        // ❌ cấm dấu _
+    if (cleanText.includes("_")) {
+      return res.status(400).json({
+        error: "Comment cannot contain '_' character"
+      });
+    }
 
     // ❌ chống XSS cơ bản
     if (/<script>/i.test(cleanText)) {
