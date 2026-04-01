@@ -16,7 +16,7 @@ async function loadPosts(){
 
   for (const post of posts)  {
     const id = post.split("_")[1]
-    const url = "https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/" + post.split("_")[1];
+    // const url = "https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/" + post.split("_")[1];
     const timee = post.split("_")[2];
     const author = post.split("_")[4];
     const caption = post.split("_")[5];
@@ -48,12 +48,12 @@ const time = date.toLocaleString("en-US", {
     <section class="post">
 
       <div class="background">
-         <img src="${url}">
+         <img src="/api/image/${id}">
       </div>
 
       <div class="content">
 
-        <img src="${url}" class="media" loading="lazy">
+        <img src="/api/image/${id}" class="media" loading="lazy">
 
         <p class="postby">Posted by ${author} at ${time}</p>
 
