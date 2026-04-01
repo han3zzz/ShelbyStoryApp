@@ -510,7 +510,7 @@ const statusText = document.getElementById("postStatusText")
   }
           });
           document.getElementById("commentText").value = "";
-          resetComment(id);
+          await resetComment(id);
             
 
         }catch(e){
