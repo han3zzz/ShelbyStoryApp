@@ -577,88 +577,53 @@ const statusText = document.getElementById("postStatusText")
    
 
  }
-async function resetComment(id) {
-  try {
+ async function resetComment(id){
+  document.getElementById("commentsend").innerHTML = '';
+    const res = await fetch("/api/getcomment/"+id)
+
+  const posts = await res.json()
+  
+  document.getElementById("commentBtn").innerText = "💬 " + posts.length
+  const feed = document.getElementById("comment-list")
+
+  feed.innerHTML = ""
+  posts.forEach(post => {
+    
+    const time = new Date(post.time).toLocaleString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit"
+})
+
+    const html = `
+    
+    <div class="comment">${post.author} at ${time} : ${post.comment}</div>
+
+    `
+
+    feed.insertAdjacentHTML("beforeend", html)
+
+  })
+   if(localStorage.getItem("user") === null){
+    document.getElementById("commentsend").innerHTML = '';
+  }else{
     const box = document.getElementById("commentsend");
-    const feed = document.getElementById("comment-list");
-    const btn = document.getElementById("commentBtn");
+     const chat = `
+  <div class="comment-input" id="commentBox">
+    <input placeholder="Write a comment..." id="commentText">
+    <button onclick="sendComment('${id}')">Send</button>
+  </div>
+  `
 
-    // ❗ check DOM
-    if (!feed) {
-      console.log("Không tìm thấy comment-list");
-      return;
-    }
+  box.insertAdjacentHTML("beforeend", chat)
 
-    if (box) box.innerHTML = "";
+  
 
-    // 🔥 fetch API
-    const res = await fetch("/api/getcomment/" + id);
 
-    if (!res.ok) {
-      console.log("API lỗi:", res.status);
-      return;
-    }
-
-    const text = await res.text();
-
-    if (!text) {
-      console.log("Response rỗng");
-      return;
-    }
-
-    let posts = [];
-    try {
-      posts = JSON.parse(text);
-    } catch (e) {
-      console.log("JSON lỗi:", text);
-      return;
-    }
-
-    // update số comment
-    if (btn) {
-      btn.innerText = "💬 " + posts.length;
-    }
-
-    // clear list
-    feed.innerHTML = "";
-
-    // 🔥 render comment
-    posts.forEach(post => {
-      const time = new Date(post.time || Date.now()).toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-
-      const html = `
-        <div class="comment">
-          ${escapeHTML(post.author || "Unknown")} 
-          at ${time} : 
-          ${escapeHTML(post.comment || "")}
-        </div>
-      `;
-
-      feed.insertAdjacentHTML("beforeend", html);
-    });
-
-    // 🔥 render input nếu login
-    if (localStorage.getItem("user")) {
-      const chat = `
-        <div class="comment-input" id="commentBox">
-          <input placeholder="Write a comment..." id="commentText">
-          <button onclick="sendComment('${id}')">Send</button>
-        </div>
-      `;
-
-      if (box) box.insertAdjacentHTML("beforeend", chat);
-    }
-
-  } catch (err) {
-    console.error("Lỗi resetComment:", err);
   }
-}
+  }
 function escapeHTML(str) {
   return String(str).replace(/[&<>"']/g, (m) => ({
     "&": "&amp;",
