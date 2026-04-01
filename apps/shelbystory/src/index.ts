@@ -368,7 +368,11 @@ const posts = blobs
         "/" +
         post.blobNameSuffix
 
-      const r = await fetch(url)
+      const r = await fetch(url, {
+    headers: {
+      "Authorization": `Bearer ${process.env.SHELBY_API_KEY}`
+    }
+  });
       return await r.json()
 
     })
