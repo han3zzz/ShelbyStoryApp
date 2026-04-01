@@ -475,3 +475,19 @@ export function verifyToken(req: any, res: any, next: any){
   }
 
 }
+app.get("/api/image/:id", async (req, res) => {
+  const url = `https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/${req.params.id}`;
+
+  const r = await fetch(url, {
+    headers: {
+      "Authorization": `Bearer ${process.env.SHELBY_API_KEY}`
+    }
+  });
+
+  const buffer = await r.arrayBuffer();
+
+  res.set("Content-Type", "image/jpeg");
+  res.set("Cache-Control", "public, max-age=86400");
+
+  res.send(Buffer.from(buffer));
+});
