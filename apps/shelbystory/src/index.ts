@@ -347,47 +347,64 @@ const jsonBytes = encoder.encode(jsonString);
   }
 });
 app.get("/api/getcomment/:id", async (req, res) => {
- const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
-  const id = req.params.id;
- // 3) Ask Shelby for a list of the account's blobs.
- const blobs = await shelbyClient.coordination.getAccountBlobs({ account });
-const posts = blobs
-    .filter(blob => {
-      const parts = blob.blobNameSuffix.split("_")
-      return parts[0] === "comment" && parts[1] === id
-    })
-    .sort((a,b)=>{
+  try {
+    const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
+    const id = req.params.id;
 
-      const timeA = Number(a.blobNameSuffix.split("_")[2])
-      const timeB = Number(b.blobNameSuffix.split("_")[2])
+    const blobs = await shelbyClient.coordination.getAccountBlobs({ account });
 
-      return timeB - timeA
-    })
+    const posts = blobs
+      .filter(blob => {
+        const parts = blob.blobNameSuffix.split("_");
+        return parts[0] === "comment" && parts[1] === id;
+      })
+      .sort((a, b) => {
+        const timeA = Number(a.blobNameSuffix.split("_")[2]);
+        const timeB = Number(b.blobNameSuffix.split("_")[2]);
+        return timeB - timeA;
+      });
 
-  const result = await Promise.all(
+    const result = [];
 
-    posts.map(async(post)=>{
+    for (const post of posts) {
+      try {
+        const url =
+          "https://api.testnet.shelby.xyz/shelby/v1/blobs/" +
+          process.env.SHELBY_ACCOUNT_ADDRESS +
+          "/" +
+          post.blobNameSuffix;
 
-      const url =
-        "https://api.testnet.shelby.xyz/shelby/v1/blobs/" +
-        process.env.SHELBY_ACCOUNT_ADDRESS +
-        "/" +
-        post.blobNameSuffix
+        const r = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${process.env.SHELBY_API_KEY}`
+          }
+        });
 
-      const r = await fetch(url, {
-    headers: {
-      "Authorization": `Bearer ${process.env.SHELBY_API_KEY}`
+        if (!r.ok) {
+          console.log("Fetch lỗi:", r.status);
+          continue;
+        }
+
+        const text = await r.text();
+
+        if (!text) continue;
+
+        const data = JSON.parse(text);
+
+        result.push(data);
+
+      } catch (err) {
+        console.log("Lỗi từng comment:", err);
+        continue;
+      }
     }
-  });
-      return await r.json()
 
-    })
+    res.json(result);
 
-  )
-
-  res.json(result)
-
-
+  } catch (err) {
+    console.error("GET COMMENT ERROR:", err);
+    res.status(500).json({ error: "Failed to load comments" });
+  }
 });
 app.get("/api/feed", async (req, res) => {
   try {
