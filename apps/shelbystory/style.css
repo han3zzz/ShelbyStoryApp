@@ -386,6 +386,13 @@ body{
 .author{
   color:rgba(80,160,255,0.8);
 }
+.postauthor{
+    font-size: 10px;
+  letter-spacing:1px;
+  color: rgba(80, 160, 255, 0.8);
+  font-weight: bold;
+
+}
 
 /* Shelby màu hồng mờ */
 
