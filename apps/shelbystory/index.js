@@ -1,83 +1,102 @@
+let allPosts = []
+let cursor = 0
+let loading = false
+let firstLoad = true
 
+async function loadPosts() {
+  if (loading || cursor === null) return
+  loading = true
 
+  if (firstLoad) document.getElementById("feed-loading").style.display = "flex"
 
-async function loadPosts(){
-  document.getElementById("feed-loading").style.display = "flex";
-  const res = await fetch("/api/feed")
-
+  const res = await fetch(`/api/feed?cursor=${cursor}`)
   const data = await res.json()
-  const posts = data.posts
-  const comments = data.comments
-  const reacts = data.reacts
 
-  const feed = document.getElementById("feed")
+  // gán react + comment để tính tổng
+  window.reacts = data.reacts
+  window.comments = data.comments
 
-  feed.innerHTML = ""
+  allPosts = allPosts.concat(data.posts)
+  cursor = data.nextCursor
+  renderPosts()
 
-  for (const post of posts)  {
-    const id = post.split("_")[1]
-    // const url = "https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/" + post.split("_")[1];
-    const timee = post.split("_")[2];
-    const author = post.split("_")[4];
-    const caption = post.split("_")[5];
-     const totalReact = getLikeCount(reacts,id);
-     const totalComment = getTotalComment(comments,id)
-     let liked = false;
-     let authorStory = "";
-
-    const user = localStorage.getItem("user");
-
-    if (user !== null) {
-      authorStory = user;
-      liked = isLiked(reacts, id, user);
-    }
-      
-    
-   const date = new Date(Number(timee))   // nếu timee là milliseconds
-
-const time = date.toLocaleString("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit"
-})
-
-    const html = `
-    
-    <section class="post">
-
-      <div class="background">
-         <img src="./assets/background1.jpg">
-      </div>
-
-      <div class="content">
-
-        <img src="/api/image/${id}" class="media" loading="lazy">
-
-        <p class="postby">Posted by ${author} at ${time}</p>
-
-        <p class="caption">${caption}</p>
-
-        <div class="actions">
-          <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}')"><span>❤️</span> <span id="totalReact_${id}">${totalReact}</span></button>
-          <button class="comment" onclick="toggleComment('${id}')" id="commentBtn">💬 ${totalComment}</button>
-        </div>
-
-      </div>
-
-    </section>
-
-    `
-
-    feed.insertAdjacentHTML("beforeend", html)
-
-  document.getElementById("feed-loading").style.display = "none";
+  if (firstLoad) {
+    document.getElementById("feed-loading").style.display = "none"
+    firstLoad = false
   }
 
+  loading = false
+  setupInfiniteScroll()
 }
 
-loadPosts();
+function renderPosts() {
+  const feed = document.getElementById("feed")
+  feed.innerHTML = ""
+
+  const user = localStorage.getItem("user")
+
+  for (const post of allPosts) {
+    const id = post.split("_")[1]
+    const timee = post.split("_")[2]
+    const author = post.split("_")[4]
+    const caption = post.split("_")[5]
+
+    const totalReact = getLikeCount(window.reacts || [], id)
+    const totalComment = getTotalComment(window.comments || [], id)
+    let liked = user ? isLiked(window.reacts || [], id, user) : false
+
+    const date = new Date(Number(timee))
+    const time = date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+
+    const html = `
+      <section class="post">
+        <div class="background">
+          <img src="/api/image/${id}">
+        </div>
+        <div class="content">
+          <img src="/api/image/${id}" class="media" loading="lazy">
+         
+          <p class="postby">Posted by <span class="postauthor" onclick="openProfile('${author}')">${author}</span> at ${time}</p>
+          <p class="caption">${caption}</p>
+          <div class="actions">
+            <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}')">
+              <span>❤️</span> <span id="totalReact_${id}">${totalReact}</span>
+            </button>
+            <button class="comment" onclick="toggleComment('${id}')" id="commentBtn">💬 ${totalComment}</button>
+          </div>
+        </div>
+      </section>
+    `
+    feed.insertAdjacentHTML("beforeend", html)
+  }
+}
+
+function setupInfiniteScroll() {
+  const feed = document.getElementById("feed")
+  const posts = feed.querySelectorAll(".post")
+  if (!posts.length) return
+
+  const lastIndex = posts.length >= 4 ? posts.length - 2 : posts.length - 1
+  const target = posts[lastIndex]
+
+  const observer = new IntersectionObserver(async entries => {
+    if (entries[0].isIntersecting) {
+      observer.unobserve(target)
+      await loadPosts()
+    }
+  }, { root: null, rootMargin: '0px', threshold: 0.5 })
+
+  observer.observe(target)
+}
+
+// lần đầu load 5 post
+loadPosts()
 
 let tokenClient;
 
@@ -755,95 +774,266 @@ function heartBurst(btn){
 function closeMyStory(){
   document.getElementById("myStoryPage").classList.remove("open")
 }
-async function myStory(){
+let storyCursor = 0
+let storyLoading = false
+let storyFirstLoad = true
+let storyPostsCache = []
+
+async function myStory() {
   document.getElementById("myStoryPage").classList.add("open")
-  const res = await fetch("/api/feed")
+  document.getElementById("profile").innerText = "My Story";
 
-const data = await res.json()
+  // reset state
+  storyCursor = 0
+  storyPostsCache = []
+  storyFirstLoad = true
 
-const posts = data.posts
-const comments = data.comments
-const reacts = data.reacts
-let authorStory = "";
-const feed = document.getElementById("myStoryList")
+  loadStoryPosts()
+}
+
+// --- load post ---
+async function loadStoryPosts() {
+  if (storyLoading || storyCursor === null) return
+  storyLoading = true
+
+  if (storyFirstLoad) {
+    document.getElementById("feed-loading").style.display = "flex"
+  }
+
+  const res = await fetch(`/api/feed?cursor=${storyCursor}`)
+  const data = await res.json()
+
+  const user = localStorage.getItem("user")
+
+  // lọc post của user
+  const filtered = data.posts.filter(p => {
+    const parts = p.split("_")
+    return parts[4] === user
+  })
+
+  // cache lại
+  storyPostsCache = storyPostsCache.concat(filtered)
+
+  // cursor vẫn theo toàn bộ feed
+  storyCursor = data.nextCursor
+
+  renderStoryPosts(data.comments, data.reacts)
+
+  if (storyFirstLoad) {
+    document.getElementById("feed-loading").style.display = "none"
+    storyFirstLoad = false
+  }
+
+  storyLoading = false
+  setupStoryScroll()
+}
+
+// --- render ---
+function renderStoryPosts(comments, reacts) {
+  const feed = document.getElementById("myStoryList")
   feed.innerHTML = ""
-    const user = localStorage.getItem("user");
 
-    if (user !== null) {
-      authorStory = user;
-    }
-const author = authorStory
+  const user = localStorage.getItem("user")
 
-const myPosts = posts.filter(p => {
+  for (const post of storyPostsCache) {
+    const parts = post.split("_")
 
-  const parts = p.split("_")
+    const id = parts[1]
+    const timee = parts[2]
+    const author = parts[4]
+    const caption = parts[5]
 
-  return parts[4] === author
+    const url = `/api/image/${id}`
 
-})
+    const totalReact = getLikeCount(reacts, id)
+    const totalComment = getTotalComment(comments, id)
+    const liked = user ? isLiked(reacts, id, user) : false
 
-  for (const post of myPosts)  {
-   
-
-  
-    const id = post.split("_")[1]
-    const url = "https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/" + post.split("_")[1];
-    const timee = post.split("_")[2];
-    const author = post.split("_")[4];
-    const caption = post.split("_")[5];
-     const totalReact = getLikeCount(reacts,id);
-     const totalComment = getTotalComment(comments,id)
-     let liked = false;
-
-    const user = localStorage.getItem("user");
-
-    if (user !== null) {
-      authorStory = user;
-      liked = isLiked(reacts, id, authorStory);
-    }
-      
-    
-   const date = new Date(Number(timee))   // nếu timee là milliseconds
-
-const time = date.toLocaleString("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit"
-})
+    const date = new Date(Number(timee))
+    const time = date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
 
     const html = `
-    
-    <section class="post">
-
-      <div class="background">
-        <img src="${url}">
-      </div>
-
-      <div class="content">
-
-        <img src="${url}" class="media">
-
-        <p class="postby">Posted by ${author} at ${time}</p>
-
-        <p class="caption">${caption}</p>
-
-        <div class="actions">
-          <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}')"><span>❤️</span> <span id="totalReact_${id}">${totalReact}</span></button>
-          <button class="comment" onclick="toggleComment('${id}')" id="commentBtn">💬 ${totalComment}</button>
+      <section class="post">
+        <div class="background">
+          <img src="${url}">
         </div>
 
-      </div>
+        <div class="content">
+          <img src="${url}" class="media">
 
-    </section>
+          <p class="postby">Posted by ${author} at ${time}</p>
+          <p class="caption">${caption}</p>
 
+          <div class="actions">
+            <button class="like ${liked ? "active" : ""}" onclick="react('${id}')">
+              ❤️ <span>${totalReact}</span>
+            </button>
+            <button class="comment" onclick="toggleComment('${id}')">
+              💬 ${totalComment}
+            </button>
+          </div>
+        </div>
+      </section>
     `
 
     feed.insertAdjacentHTML("beforeend", html)
-
   }
-} 
+}
+
+// --- infinite scroll ---
+function setupStoryScroll() {
+  const feed = document.getElementById("myStoryList")
+  const posts = feed.querySelectorAll(".post")
+  if (!posts.length) return
+
+  const index = posts.length >= 4 ? posts.length - 2 : posts.length - 1
+  const target = posts[index]
+
+  const observer = new IntersectionObserver(async entries => {
+    if (entries[0].isIntersecting) {
+      observer.unobserve(target)
+      await loadStoryPosts()
+    }
+  }, { threshold: 0.5 })
+
+  observer.observe(target)
+}
+
+let profileCursor = 0
+let profileLoading = false
+let profileFirstLoad = true
+let profilePostsCache = []
+let profileEmail = null // 👈 email đang xem
+
+async function openProfile(email) {
+  document.getElementById("myStoryPage").classList.add("open")
+  document.getElementById("profile").innerText = "Profile " + email
+
+  profileEmail = email
+
+  // reset state
+  profileCursor = 0
+  profilePostsCache = []
+  profileFirstLoad = true
+
+  loadProfilePosts()
+}
+async function loadProfilePosts() {
+  if (profileLoading || profileCursor === null) return
+  profileLoading = true
+
+  if (profileFirstLoad) {
+    document.getElementById("feed-loading").style.display = "flex"
+  }
+
+  const res = await fetch(`/api/feed?cursor=${profileCursor}`)
+  const data = await res.json()
+
+  // 🔥 lọc theo email truyền vào
+  const filtered = data.posts.filter(p => {
+    const parts = p.split("_")
+    return parts[4] === profileEmail
+  })
+
+  profilePostsCache = profilePostsCache.concat(filtered)
+
+  profileCursor = data.nextCursor
+
+  renderProfilePosts(data.comments, data.reacts)
+
+  if (profileFirstLoad) {
+    document.getElementById("feed-loading").style.display = "none"
+    profileFirstLoad = false
+  }
+
+  profileLoading = false
+  setupProfileScroll()
+}
+function renderProfilePosts(comments, reacts) {
+  const feed = document.getElementById("myStoryList")
+  feed.innerHTML = ""
+
+  const currentUser = localStorage.getItem("user")
+
+  for (const post of profilePostsCache) {
+    const parts = post.split("_")
+
+    const id = parts[1]
+    const timee = parts[2]
+    const author = parts[4]
+    const caption = parts[5]
+
+    const url = `/api/image/${id}`
+
+    const totalReact = getLikeCount(reacts, id)
+    const totalComment = getTotalComment(comments, id)
+    const liked = currentUser ? isLiked(reacts, id, currentUser) : false
+
+    const date = new Date(Number(timee))
+    const time = date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+
+    const html = `
+      <section class="post">
+        <div class="background">
+          <img src="${url}">
+        </div>
+
+        <div class="content">
+          <img src="${url}" class="media">
+
+          <p class="postby">
+            Posted by 
+              ${author}
+            </span>
+            at ${time}
+          </p>
+
+          <p class="caption">${caption}</p>
+
+          <div class="actions">
+            <button class="like ${liked ? "active" : ""}" onclick="react('${id}')">
+              ❤️ <span>${totalReact}</span>
+            </button>
+            <button class="comment" onclick="toggleComment('${id}')">
+              💬 ${totalComment}
+            </button>
+          </div>
+        </div>
+      </section>
+    `
+
+    feed.insertAdjacentHTML("beforeend", html)
+  }
+}
+function setupProfileScroll() {
+  const feed = document.getElementById("myStoryList")
+  const posts = feed.querySelectorAll(".post")
+  if (!posts.length) return
+
+  const index = posts.length >= 4 ? posts.length - 2 : posts.length - 1
+  const target = posts[index]
+
+  const observer = new IntersectionObserver(async entries => {
+    if (entries[0].isIntersecting) {
+      observer.unobserve(target)
+      await loadProfilePosts()
+    }
+  }, { threshold: 0.5 })
+
+  observer.observe(target)
+}
 async function toggleNotify(){
 
   const box = document.getElementById("notifyBox")
