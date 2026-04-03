@@ -57,7 +57,7 @@ function renderPosts() {
     const html = `
       <section class="post">
         <div class="background">
-          <img src="/api/image/${id}">
+          <img src="./assets/background1.jpg">
         </div>
         <div class="content">
           <img src="/api/image/${id}" class="media" loading="lazy">
