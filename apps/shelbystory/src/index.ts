@@ -508,18 +508,57 @@ export function verifyToken(req: any, res: any, next: any){
 
 }
 app.get("/api/image/:id", async (req, res) => {
-  const url = `https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/${req.params.id}`;
+  try {
+    const url = `https://api.testnet.shelby.xyz/shelby/v1/blobs/0x2a2b71eb64838441b6bb408913cacd6d04f517fac1e187f7c346931f35b32775/${req.params.id}`;
 
-  const r = await fetch(url, {
-    headers: {
-      "Authorization": `Bearer ${process.env.SHELBY_API_KEY}`
+    async function fetchWithRetry(retries = 2) {
+      for (let i = 0; i <= retries; i++) {
+        const r = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${process.env.SHELBY_API_KEY}`
+          }
+        });
+
+        // ❗ nếu status lỗi → retry
+        if (!r.ok) {
+          console.error("Shelby status:", r.status);
+        } else {
+          const buffer = await r.arrayBuffer();
+
+          // ❗ nếu có data thật → return luôn
+          if (buffer && buffer.byteLength > 0) {
+            return {
+              buffer,
+              contentType: r.headers.get("content-type")
+            };
+          }
+
+          console.error("Empty buffer lần", i + 1);
+        }
+
+        // delay 200ms rồi thử lại
+        await new Promise(res => setTimeout(res, 200));
+      }
+
+      return null;
     }
-  });
 
-  const buffer = await r.arrayBuffer();
+    const result = await fetchWithRetry(2);
 
-  res.set("Content-Type", "image/jpeg");
-  res.set("Cache-Control", "public, max-age=86400");
+    if (!result) {
+      return res.status(404).send("Image not ready");
+    }
 
-  res.send(Buffer.from(buffer));
+    res.set(
+      "Content-Type",
+      result.contentType || "image/jpeg"
+    );
+    res.set("Cache-Control", "public, max-age=86400");
+
+    res.send(Buffer.from(result.buffer));
+
+  } catch (err) {
+    console.error("Server error:", err);
+    res.status(500).send("Server error");
+  }
 });
