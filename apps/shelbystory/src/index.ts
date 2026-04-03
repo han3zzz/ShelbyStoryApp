@@ -408,17 +408,15 @@ app.get("/api/getcomment/:id", async (req, res) => {
 });
 app.get("/api/feed", async (req, res) => {
   try {
-
     const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS)
-
     const blobs = await shelbyClient.coordination.getAccountBlobs({ account })
 
     const posts = []
     const comments = []
     const reacts = []
 
+    // phân loại blob
     for (const blob of blobs) {
-
       const name = blob?.blobNameSuffix
       if (!name) continue
 
@@ -428,32 +426,38 @@ app.get("/api/feed", async (req, res) => {
       if (type === "post") posts.push(name)
       else if (type === "comment") comments.push(name)
       else if (type === "like" || type === "unlike") reacts.push(name)
-
     }
 
-    // sort post mới nhất trước (dựa vào timestamp ở index 2)
+    // sort post mới nhất trước (dựa vào timestamp index 2)
     posts.sort((a, b) => {
       const ta = Number(a.split("_")[2]) || 0
       const tb = Number(b.split("_")[2]) || 0
       return tb - ta
     })
 
+    // --- CURSOR PAGINATION ---
+    const limit = 5
+    const cursorStr = req.query.cursor as string | undefined
+    const cursor = cursorStr ? parseInt(cursorStr) : 0
+
+    const slice = posts.slice(cursor, cursor + limit)
+    const nextCursor = cursor + slice.length < posts.length ? cursor + slice.length : null
+
     res.json({
-      posts,
-      comments,
-      reacts
+      posts: slice,
+      comments, // trả toàn bộ nếu muốn, hoặc tách pagination riêng
+      reacts,   // tương tự
+      nextCursor
     })
 
   } catch (err) {
-
     console.log("FEED ERROR:", err)
-
     res.status(500).json({
       posts: [],
       comments: [],
-      reacts: []
+      reacts: [],
+      nextCursor: null
     })
-
   }
 })
 app.post("/api/login",upload.single("file"), (req, res) => {
