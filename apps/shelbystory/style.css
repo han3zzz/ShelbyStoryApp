@@ -774,7 +774,7 @@ credit .author{
   border-radius:20px;
 
 
-  pointer-events:none;
+  pointer-events:auto;
   user-select:none;
 }
 .like{
