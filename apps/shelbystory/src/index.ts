@@ -458,6 +458,106 @@ app.get("/api/feed", async (req, res) => {
     })
   }
 })
+app.get("/api/profile", async (req, res) => {
+  try {
+    const email = (req.query.email as string || "").trim().toLowerCase()
+    const cursorStr = req.query.cursor as string | undefined
+    const cursor = cursorStr ? parseInt(cursorStr) : 0
+    const limit = 5
+
+    if (!email) {
+      return res.status(400).json({
+        posts: [],
+        comments: [],
+        reacts: [],
+        nextCursor: null
+      })
+    }
+
+    const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS)
+    const blobs = await getAllBlobs(account)
+
+    const posts: string[] = []
+    const comments: string[] = []
+    const reacts: string[] = []
+
+    const postIds = new Set<string>()
+
+    // 🔥 BƯỚC 1: lấy post của user
+    for (const blob of blobs) {
+      const name = blob?.blobNameSuffix
+      if (!name || !name.includes("_")) continue
+
+      const decoded = decodeURIComponent(name).toLowerCase()
+      const parts = decoded.split("_")
+
+      if (parts.length < 5) continue
+
+      const type = parts[0]
+      const postId = parts[1]
+      const blobEmail = parts[4]
+
+      if (type === "post" && blobEmail === email) {
+        posts.push(name)
+        postIds.add(postId)
+      }
+    }
+
+    // 🔥 sort post mới nhất
+    posts.sort((a, b) => {
+      const ta = Number(a.split("_")[2]) || 0
+      const tb = Number(b.split("_")[2]) || 0
+      return tb - ta
+    })
+
+    // 🔥 pagination
+    const slice = posts.slice(cursor, cursor + limit)
+    const nextCursor =
+      cursor + slice.length < posts.length
+        ? cursor + slice.length
+        : null
+
+    // 🔥 chỉ lấy postId của page hiện tại (tối ưu)
+    const currentPostIds = new Set(
+      slice.map(p => p.split("_")[1])
+    )
+
+    // 🔥 BƯỚC 2: lấy comment + react theo postId
+    for (const blob of blobs) {
+      const name = blob?.blobNameSuffix
+      if (!name || !name.includes("_")) continue
+
+      const decoded = decodeURIComponent(name).toLowerCase()
+      const parts = decoded.split("_")
+
+      if (parts.length < 2) continue
+
+      const type = parts[0]
+      const postId = parts[1]
+
+      if (!currentPostIds.has(postId)) continue
+
+      if (type === "comment") comments.push(name)
+      else if (type === "like" || type === "unlike") reacts.push(name)
+    }
+
+    res.json({
+      posts: slice,
+      comments,
+      reacts,
+      nextCursor
+    })
+
+  } catch (err) {
+    console.log("PROFILE ERROR:", err)
+    res.status(500).json({
+      posts: [],
+      comments: [],
+      reacts: [],
+      nextCursor: null
+    })
+  }
+})
 app.get("/api/nofi", async (req, res) => {
   try {
     const currentUser = req.query.user as string
