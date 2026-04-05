@@ -458,6 +458,118 @@ app.get("/api/feed", async (req, res) => {
     })
   }
 })
+app.get("/api/nofi", async (req, res) => {
+  try {
+    const currentUser = req.query.user as string
+    if (!currentUser) {
+      return res.status(400).json({ notifications: [] })
+    }
+
+    const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS)
+    const blobs = await getAllBlobs(account)
+
+    const posts: string[] = []
+    const comments: string[] = []
+    const reacts: string[] = []
+
+    // --- phân loại ---
+    for (const blob of blobs) {
+      const name = blob?.blobNameSuffix
+      if (!name) continue
+      if (!name.includes("_")) continue
+
+      const parts = name.split("_")
+      const type = parts[0]
+
+      if (type === "post") posts.push(name)
+      else if (type === "comment") comments.push(name)
+      else if (type === "like" || type === "unlike") reacts.push(name)
+    }
+
+    // --- lấy post của user ---
+    const myPosts = posts.filter(p => p.split("_")[4] === currentUser)
+    const myPostIds = myPosts.map(p => p.split("_")[1])
+
+    // map postId -> caption
+    const postMap = new Map<string, string>()
+    myPosts.forEach(p => {
+      const parts = p.split("_")
+      postMap.set(parts[1], parts[5] || "")
+    })
+
+    const seen = new Set()
+    const notifications: any[] = []
+
+    // --- reacts ---
+    reacts.forEach(r => {
+      const p = r.split("_")
+      if (p.length < 5) return
+
+      const type = p[0]
+      const postId = p[1]
+      const time = p[2]
+      const user = p[4]
+
+      if (!myPostIds.includes(postId)) return
+      if (user === currentUser) return
+
+      const caption = postMap.get(postId) || ""
+
+      const key = `${type}_${postId}_${user}`
+
+      if (seen.has(key)) return
+      seen.add(key)
+
+      notifications.push({
+        type,
+        author: user,
+        caption,
+        time
+      })
+    })
+
+    // --- comments ---
+    comments.forEach(c => {
+      const p = c.split("_")
+      if (p.length < 5) return
+
+      const postId = p[1]
+      const time = p[2]
+      const user = p[4]
+
+      if (!myPostIds.includes(postId)) return
+      if (user === currentUser) return
+
+      const caption = postMap.get(postId) || ""
+
+      const key = `comment_${postId}_${user}`
+
+      if (seen.has(key)) return
+      seen.add(key)
+
+      notifications.push({
+        type: "comment",
+        author: user,
+        caption,
+        time
+      })
+    })
+
+    // sort mới nhất
+    notifications.sort((a, b) => Number(b.time) - Number(a.time))
+
+    res.json({
+      notifications
+    })
+
+  } catch (err) {
+    console.log("NOFI ERROR:", err)
+
+    res.status(500).json({
+      notifications: []
+    })
+  }
+})
 app.post("/api/login",upload.single("file"), (req, res) => {
 
   const  email = req.body;
