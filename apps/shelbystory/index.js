@@ -18,7 +18,7 @@ async function loadPosts() {
 
   allPosts = allPosts.concat(data.posts)
   cursor = data.nextCursor
-  renderPosts()
+  renderPosts(allPosts)
 
   if (firstLoad) {
     document.getElementById("feed-loading").style.display = "none"
@@ -29,21 +29,25 @@ async function loadPosts() {
   setupInfiniteScroll()
 }
 
-function renderPosts() {
+function renderPosts(posts) {
   const feed = document.getElementById("feed")
-  feed.innerHTML = ""
-
   const user = localStorage.getItem("user")
 
-  for (const post of allPosts) {
-    const id = post.split("_")[1]
-    const timee = post.split("_")[2]
-    const author = post.split("_")[4]
-    const caption = post.split("_")[5]
+  for (const post of posts) { // 🔥 chỉ render post mới
+    const parts = post.split("_")
+
+    const id = parts[1]
+
+    // 🔥 chống trùng
+    if (document.querySelector(`[data-id="${id}"]`)) continue
+
+    const timee = parts[2]
+    const author = parts[4]
+    const caption = parts[5]
 
     const totalReact = getLikeCount(window.reacts || [], id)
     const totalComment = getTotalComment(window.comments || [], id)
-    let liked = user ? isLiked(window.reacts || [], id, user) : false
+    const liked = user ? isLiked(window.reacts || [], id, user) : false
 
     const date = new Date(Number(timee))
     const time = date.toLocaleString("en-US", {
@@ -55,28 +59,39 @@ function renderPosts() {
     })
 
     const html = `
-      <section class="post">
+      <section class="post" data-id="${id}">
         <div class="background">
-          <img src="./assets/background1.jpg">
+          <img src="/api/image/${id}">
         </div>
         <div class="content">
           <img src="/api/image/${id}" class="media" loading="lazy">
          
-          <p class="postby">Posted by <span class="postauthor" onclick="openProfile('${author}')">${author}</span> at ${time}</p>
+          <p class="postby">
+            Posted by 
+            <span class="postauthor" onclick="openProfile('${author}')">
+              ${author}
+            </span> 
+            at ${time}
+          </p>
+
           <p class="caption">${caption}</p>
+
           <div class="actions">
             <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}')">
-              <span>❤️</span> <span id="totalReact_${id}">${totalReact}</span>
+              ❤️ <span id="totalReact_${id}">${totalReact}</span>
             </button>
-            <button class="comment" onclick="toggleComment('${id}')" id="commentBtn">💬 ${totalComment}</button>
+
+            <button class="comment" onclick="toggleComment('${id}')">
+              💬 ${totalComment}
+            </button>
           </div>
         </div>
       </section>
     `
-    feed.insertAdjacentHTML("beforeend", html)
+
+    feed.insertAdjacentHTML("beforeend", html) // 🔥 append
   }
 }
-
 function setupInfiniteScroll() {
   const feed = document.getElementById("feed")
   const posts = feed.querySelectorAll(".post")
@@ -784,6 +799,7 @@ async function myStory() {
   document.getElementById("profile").innerText = "My Story";
 
   // reset state
+  document.getElementById("myStoryList").scrollTop = 0
   storyCursor = 0
   storyPostsCache = []
   storyFirstLoad = true
@@ -800,7 +816,7 @@ async function loadStoryPosts() {
     document.getElementById("feed-loading").style.display = "flex"
   }
 
-  const res = await fetch(`/api/feed?cursor=${storyCursor}`)
+  const res = await fetch(`/api/feed?cursor=${storyCursor}&t=${Date.now()}`)
   const data = await res.json()
 
   const user = localStorage.getItem("user")
@@ -817,7 +833,7 @@ async function loadStoryPosts() {
   // cursor vẫn theo toàn bộ feed
   storyCursor = data.nextCursor
 
-  renderStoryPosts(data.comments, data.reacts)
+  renderStoryPosts(storyPostsCache,data.comments, data.reacts)
 
   if (storyFirstLoad) {
     document.getElementById("feed-loading").style.display = "none"
@@ -829,16 +845,18 @@ async function loadStoryPosts() {
 }
 
 // --- render ---
-function renderStoryPosts(comments, reacts) {
+function renderStoryPosts(posts, comments, reacts) {
   const feed = document.getElementById("myStoryList")
-  feed.innerHTML = ""
-
   const user = localStorage.getItem("user")
 
-  for (const post of storyPostsCache) {
+  for (const post of posts) { // 🔥 chỉ render post mới
     const parts = post.split("_")
 
     const id = parts[1]
+
+    // 🔥 chống trùng
+    if (document.querySelector(`[data-id="${id}"]`)) continue
+
     const timee = parts[2]
     const author = parts[4]
     const caption = parts[5]
@@ -859,7 +877,7 @@ function renderStoryPosts(comments, reacts) {
     })
 
     const html = `
-      <section class="post">
+      <section class="post" data-id="${id}">
         <div class="background">
           <img src="${url}">
         </div>
@@ -882,10 +900,9 @@ function renderStoryPosts(comments, reacts) {
       </section>
     `
 
-    feed.insertAdjacentHTML("beforeend", html)
+    feed.insertAdjacentHTML("beforeend", html) // 🔥 append
   }
 }
-
 // --- infinite scroll ---
 function setupStoryScroll() {
   const feed = document.getElementById("myStoryList")
@@ -909,7 +926,9 @@ let profileCursor = 0
 let profileLoading = false
 let profileFirstLoad = true
 let profilePostsCache = []
-let profileEmail = null // 👈 email đang xem
+let profileCommentsCache = []
+let profileReactsCache = []
+let profileEmail = null //  email đang xem
 
 async function openProfile(email) {
   document.getElementById("myStoryPage").classList.add("open")
@@ -918,34 +937,34 @@ async function openProfile(email) {
   profileEmail = email
 
   // reset state
+  document.getElementById("myStoryList").innerHTML = ""
+  document.getElementById("myStoryList").scrollTop = 0
   profileCursor = 0
   profilePostsCache = []
+  profileCommentsCache = []
+  profileReactsCache = []
   profileFirstLoad = true
-
-  loadProfilePosts()
+  
+  loadProfilePosts(profileEmail)
 }
-async function loadProfilePosts() {
+async function loadProfilePosts(email) {
   if (profileLoading || profileCursor === null) return
   profileLoading = true
 
   if (profileFirstLoad) {
     document.getElementById("feed-loading").style.display = "flex"
   }
-
-  const res = await fetch(`/api/feed?cursor=${profileCursor}`)
+  
+  const res = await fetch(`/api/profile?email=${email}&cursor=${profileCursor}&t=${Date.now()}`)
   const data = await res.json()
 
-  // 🔥 lọc theo email truyền vào
-  const filtered = data.posts.filter(p => {
-    const parts = p.split("_")
-    return parts[4] === profileEmail
-  })
 
-  profilePostsCache = profilePostsCache.concat(filtered)
-
+  profilePostsCache = profilePostsCache.concat(data.posts)
+  profileCommentsCache = profileCommentsCache.concat(data.comments)
+  profileReactsCache = profileReactsCache.concat(data.reacts)
   profileCursor = data.nextCursor
 
-  renderProfilePosts(data.comments, data.reacts)
+  renderProfilePosts(profilePostsCache,profileCommentsCache, profileReactsCache)
 
   if (profileFirstLoad) {
     document.getElementById("feed-loading").style.display = "none"
@@ -955,13 +974,11 @@ async function loadProfilePosts() {
   profileLoading = false
   setupProfileScroll()
 }
-function renderProfilePosts(comments, reacts) {
+function renderProfilePosts(posts, comments, reacts) {
   const feed = document.getElementById("myStoryList")
-  feed.innerHTML = ""
-
   const currentUser = localStorage.getItem("user")
 
-  for (const post of profilePostsCache) {
+  for (const post of posts) { // 🔥 chỉ render post mới
     const parts = post.split("_")
 
     const id = parts[1]
@@ -994,10 +1011,7 @@ function renderProfilePosts(comments, reacts) {
           <img src="${url}" class="media">
 
           <p class="postby">
-            Posted by 
-              ${author}
-            </span>
-            at ${time}
+            Posted by ${author} at ${time}
           </p>
 
           <p class="caption">${caption}</p>
@@ -1014,7 +1028,7 @@ function renderProfilePosts(comments, reacts) {
       </section>
     `
 
-    feed.insertAdjacentHTML("beforeend", html)
+    feed.insertAdjacentHTML("beforeend", html) // 🔥 append
   }
 }
 function setupProfileScroll() {
@@ -1028,7 +1042,7 @@ function setupProfileScroll() {
   const observer = new IntersectionObserver(async entries => {
     if (entries[0].isIntersecting) {
       observer.unobserve(target)
-      await loadProfilePosts()
+      await loadProfilePosts(profileEmail)
     }
   }, { threshold: 0.5 })
 
