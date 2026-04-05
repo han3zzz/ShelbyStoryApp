@@ -185,8 +185,7 @@ app.listen(3000, () => {
 app.get("/api/list", async (req, res) => {
  const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
  
- // 3) Ask Shelby for a list of the account's blobs.
- const blobs = await shelbyClient.coordination.getAccountBlobs({ account });
+ const blobs = await getAllBlobs(account)
 const posts = blobs
   .filter(blob => blob.blobNameSuffix.startsWith("post"))
   .sort((a,b)=>{
@@ -213,8 +212,7 @@ res.json(result);
 app.get("/api/getReact", async (req, res) => {
  const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
  
- // 3) Ask Shelby for a list of the account's blobs.
- const blobs = await shelbyClient.coordination.getAccountBlobs({ account });
+ const blobs = await getAllBlobs(account)
 const posts = blobs
   .filter(blob => {
 
@@ -351,7 +349,7 @@ app.get("/api/getcomment/:id", async (req, res) => {
     const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS);
     const id = req.params.id;
 
-    const blobs = await shelbyClient.coordination.getAccountBlobs({ account });
+    const blobs = await getAllBlobs(account)
 
     const posts = blobs
       .filter(blob => {
@@ -409,7 +407,7 @@ app.get("/api/getcomment/:id", async (req, res) => {
 app.get("/api/feed", async (req, res) => {
   try {
     const account = AccountAddress.fromString(process.env.SHELBY_ACCOUNT_ADDRESS)
-    const blobs = await shelbyClient.coordination.getAccountBlobs({ account })
+    const blobs = await getAllBlobs(account)
 
     const posts = []
     const comments = []
@@ -562,3 +560,25 @@ app.get("/api/image/:id", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+async function getAllBlobs(account: string) {
+  const limit = 200;
+  let offset = 0; // ⚠️ phải bắt đầu từ 0
+  let allBlobs: any[] = [];
+
+  while (true) {
+    const blobs = await shelbyClient.coordination.getAccountBlobs({
+      account,
+      pagination: { limit, offset }
+    });
+
+    allBlobs = allBlobs.concat(blobs);
+
+    // nếu trả về ít hơn limit => đã hết data
+    if (blobs.length < limit) break;
+
+    offset += limit;
+  }
+
+  return allBlobs;
+}
