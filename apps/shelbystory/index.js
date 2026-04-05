@@ -1034,122 +1034,56 @@ function setupProfileScroll() {
 
   observer.observe(target)
 }
-async function toggleNotify(){
 
+async function toggleNotify() {
   const box = document.getElementById("notifyBox")
   const notifyList = document.getElementById("notifyList")
 
   // nếu đang mở thì đóng
-  if(box.classList.contains("open")){
+  if (box.classList.contains("open")) {
     box.classList.remove("open")
     return
   }
-   let authorStory = "";
 
-    const user = localStorage.getItem("user");
+  let authorStory = ""
+  const user = localStorage.getItem("user")
+  if (user !== null) authorStory = user
 
-    if (user !== null) {
-      authorStory = user;
-    }
-
-  const res = await fetch("/api/feed")
+  const res = await fetch(`/api/nofi?user=${user}`)
   const data = await res.json()
-
-  const posts = data.posts
-  const comments = data.comments
-  const reacts = data.reacts
-
-  const myPosts = posts.filter(p => p.split("_")[4] === authorStory)
-  const myPostIds = myPosts.map(p => p.split("_")[1])
-
-  const notifications = []
-
-  // like + unlike
-  reacts.forEach(r => {
-
-    const p = r.split("_")
-
-    const type = p[0]
-    const postId = p[1]
-    const user = p[4]
-    const time = p[2]
-    const story = myPosts.find(p => p.split("_")[1] === postId)
-
-    const caption = story ? story.split("_")[5] : ""
-    if(myPostIds.includes(postId) && user !== authorStory){
-
-      notifications.push({
-        type,
-        author:user,
-        caption : caption,
-        time : time
-      })
-
-    }
-
-  })
-
-  // comment
-  comments.forEach(c => {
-
-    const p = c.split("_")
-
-    const postId = p[1]
-    const user = p[4]
-     const time = p[2]
-     const story = myPosts.find(p => p.split("_")[1] === postId)
-
-    const caption = story ? story.split("_")[5] : ""
-    if(myPostIds.includes(postId) && user !== authorStory){
-
-      notifications.push({
-        type:"comment",
-        author:user,
-        caption : caption,
-        time : time
-      })
-
-    }
-
-  })
-  notifications.sort((a, b) => Number(b.time) - Number(a.time))
-  // clear
+  const notifications = data.notifications
+  // clear UI
   notifyList.innerHTML = ""
 
   // render
   notifications.forEach(n => {
-     const date = new Date(Number(n.time))   // nếu timee là milliseconds
+    const date = new Date(Number(n.time))
 
-      const time = date.toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      })
+    const time = date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
 
     const div = document.createElement("div")
     div.className = "notify-item"
 
-    if(n.type === "like"){
-      div.innerText = n.author + " liked your post '" + n.caption + "' at " + time
-    }
-
-    if(n.type === "unlike"){
-      div.innerText = n.author + " unliked your post '" + n.caption + "' at " + time
-    }
-
-    if(n.type === "comment"){
-      div.innerText = n.author + " commented on your post '" + n.caption + "' at " + time
+    if (n.type === "like") {
+      div.innerText = `${n.author} liked your post '${n.caption}' at ${time}`
+    } 
+    else if (n.type === "unlike") {
+      div.innerText = `${n.author} unliked your post '${n.caption}' at ${time}`
+    } 
+    else if (n.type === "comment") {
+      div.innerText = `${n.author} commented on your post '${n.caption}' at ${time}`
     }
 
     notifyList.appendChild(div)
-
   })
 
-
-  box.classList.toggle("open")
-
+  box.classList.add("open")
 }
 
 
