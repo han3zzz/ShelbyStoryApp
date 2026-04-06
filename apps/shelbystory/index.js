@@ -81,7 +81,7 @@ function renderPosts(posts) {
               <span>❤️ </span> <span id="totalReact_${id}">${totalReact}</span>
             </button>
 
-            <button class="comment" onclick="toggleComment('${id}')">
+            <button class="comment" id="comment_${id}" onclick="toggleComment('${id}')">
               💬 ${totalComment}
             </button>
           </div>
@@ -614,52 +614,58 @@ async function react(id, btnLike) {
 
  }
  async function resetComment(id){
-  document.getElementById("commentsend").innerHTML = '';
-    const res = await fetch("/api/getcomment/"+id)
+  const box = document.getElementById("commentsend");
+  if (box) box.innerHTML = '';
 
-  const posts = await res.json()
-  
-  document.getElementById("commentBtn").innerText = "💬 " + posts.length
-  const feed = document.getElementById("comment-list")
+  const res = await fetch("/api/getcomment/" + id);
 
-  feed.innerHTML = ""
+  if (!res.ok) {
+    console.error("API lỗi:", res.status);
+    return;
+  }
+
+  const posts = await res.json();
+
+  const btn = document.getElementById("comment_" + id);
+  if (btn) {
+    btn.innerText = "💬 " + posts.length;
+  }
+    const current = parseInt(btn.innerText.replace("💬", "").trim())
+    btn.innerText = "💬 " + current
+  const feed = document.getElementById("comment-list");
+  if (!feed) return;
+
+  feed.innerHTML = "";
+
   posts.forEach(post => {
-    
     const time = new Date(post.time).toLocaleString("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit"
-})
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
 
     const html = `
-    
-    <div class="comment">${post.author} at ${time} : ${post.comment}</div>
+      <div class="comment">
+        ${post.author || "Unknown"} at ${time} : ${post.comment || ""}
+      </div>
+    `;
 
-    `
+    feed.insertAdjacentHTML("beforeend", html);
+  });
 
-    feed.insertAdjacentHTML("beforeend", html)
+  if (localStorage.getItem("user")) {
+    const chat = `
+      <div class="comment-input" id="commentBox">
+        <input placeholder="Write a comment..." id="commentText">
+        <button onclick="sendComment('${id}')">Send</button>
+      </div>
+    `;
 
-  })
-   if(localStorage.getItem("user") === null){
-    document.getElementById("commentsend").innerHTML = '';
-  }else{
-    const box = document.getElementById("commentsend");
-     const chat = `
-  <div class="comment-input" id="commentBox">
-    <input placeholder="Write a comment..." id="commentText">
-    <button onclick="sendComment('${id}')">Send</button>
-  </div>
-  `
-
-  box.insertAdjacentHTML("beforeend", chat)
-
-  
-
-
+    if (box) box.insertAdjacentHTML("beforeend", chat);
   }
-  }
+}
 function escapeHTML(str) {
   return String(str).replace(/[&<>"']/g, (m) => ({
     "&": "&amp;",
@@ -891,7 +897,7 @@ function renderStoryPosts(posts, comments, reacts) {
           <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}',this)">
               <span>❤️ </span> <span id="totalReact_${id}">${totalReact}</span>
             </button>
-            <button class="comment" onclick="toggleComment('${id}')">
+            <button class="comment" id="comment_${id}" onclick="toggleComment('${id}')">
               💬 ${totalComment}
             </button>
           </div>
@@ -1020,7 +1026,7 @@ function renderProfilePosts(posts, comments, reacts) {
             <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}',this)">
               <span>❤️ </span> <span id="totalReact_${id}">${totalReact}</span>
             </button>
-            <button class="comment" onclick="toggleComment('${id}')">
+            <button class="comment" id="comment_${id}" onclick="toggleComment('${id}')">
               💬 ${totalComment}
             </button>
           </div>
