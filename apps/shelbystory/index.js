@@ -422,72 +422,74 @@ fileInput.onchange = () => {
     const statusBox = document.getElementById("postStatus")
 const statusText = document.getElementById("postStatusText")
 
+async function react(id, btnLike) {
+  let authorStory = ""
 
- async function react(id){
-          let authorStory = "";
+  const user = localStorage.getItem("user")
+  if (user !== null) authorStory = user
 
-    const user = localStorage.getItem("user");
+  const token1 = localStorage.getItem("token")
 
-    if (user !== null) {
-      authorStory = user;
-    }
-   const token1 = localStorage.getItem("token");
-         const formData = new FormData();
-      formData.append("id",id);
-      formData.append("author",authorStory);
-      const btnLike = document.getElementById("reactBtn_"+id)
-      const total = document.getElementById("totalReact_"+id);
-      const totalnow = total.textContent;
-       // chặn spam click
-     if(btnLike.classList.contains("loading")) return
+  const formData = new FormData()
+  formData.append("id", id)
+  formData.append("author", authorStory)
 
-      const checkliked = btnLike.classList.contains("active")
-      btnLike.classList.add("loading")
-      const type = checkliked ? "unlike" : "like"
-      formData.append("type",type);
-      try {
-        const response = await fetch('/api/react', {
-          method: 'POST',
-          headers:{
-          Authorization:"Bearer "+token1
-          },
-          body: formData,
-          
+  // 👉 lấy số like ngay trong button
+  const total = btnLike.querySelector("span:last-child")
+  const totalnow = Number(total.textContent)
 
-        });
-        
+  // ❗ chặn spam
+  if (btnLike.classList.contains("loading")) return
 
-        if (!response.ok) {
-          const errorData = await response.json();
-           Swal.fire({
-            title: errorData.error, // hiển thị lỗi
-            icon: "error",
-            customClass:{
-            container:"my-swal"
-  }
-          });
-          return;
+  const checkliked = btnLike.classList.contains("active")
+  btnLike.classList.add("loading")
+
+  const type = checkliked ? "unlike" : "like"
+  formData.append("type", type)
+
+  try {
+    const response = await fetch('/api/react', {
+      method: 'POST',
+      headers: {
+        Authorization: "Bearer " + token1
+      },
+      body: formData
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      Swal.fire({
+        title: errorData.error,
+        icon: "error",
+        customClass: {
+          container: "my-swal"
         }
+      })
+      return
+    }
 
-    if(type==="like"){
+    // 👉 update UI
+    if (type === "like") {
       btnLike.classList.add("active")
-      total.innerText = Number(totalnow)+1
-       heartBurst(btnLike)
-    }else{
+      total.innerText = totalnow + 1
+      heartBurst(btnLike)
+    } else {
       btnLike.classList.remove("active")
-      total.innerText = Number(totalnow)-1
+      total.innerText = totalnow - 1
     }
-        const data = await response.json();
-        btnLike.style.transform = "scale(1)";
-        btnLike.offsetHeight;
-            
-        }catch(e){
-            
-        }
-                finally {
-               btnLike.classList.remove("loading")
-            }
- }
+
+    await response.json()
+
+    btnLike.style.transform = "scale(1)"
+    btnLike.offsetHeight
+
+  } catch (e) {
+    console.error(e)
+  } finally {
+    btnLike.classList.remove("loading")
+  }
+}
+
  async function sendComment(id){
          let authorStory = "";
 
