@@ -799,6 +799,7 @@ async function myStory() {
   document.getElementById("profile").innerText = "My Story";
 
   // reset state
+  document.getElementById("myStoryList").innerHTML = ""
   document.getElementById("myStoryList").scrollTop = 0
   storyCursor = 0
   storyPostsCache = []
