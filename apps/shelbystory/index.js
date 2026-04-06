@@ -77,7 +77,7 @@ function renderPosts(posts) {
           <p class="caption">${caption}</p>
 
           <div class="actions">
-            <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}')">
+            <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}',this)">
               <span>❤️ </span> <span id="totalReact_${id}">${totalReact}</span>
             </button>
 
@@ -888,7 +888,7 @@ function renderStoryPosts(posts, comments, reacts) {
 
           <div class="actions">
           
-          <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}')">
+          <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}',this)">
               <span>❤️ </span> <span id="totalReact_${id}">${totalReact}</span>
             </button>
             <button class="comment" onclick="toggleComment('${id}')">
@@ -1017,7 +1017,7 @@ function renderProfilePosts(posts, comments, reacts) {
           <p class="caption">${caption}</p>
 
           <div class="actions">
-            <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}')">
+            <button class="like ${liked ? "active" : ""}" id="reactBtn_${id}" onclick="react('${id}',this)">
               <span>❤️ </span> <span id="totalReact_${id}">${totalReact}</span>
             </button>
             <button class="comment" onclick="toggleComment('${id}')">
