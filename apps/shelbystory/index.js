@@ -816,25 +816,20 @@ async function loadStoryPosts() {
     document.getElementById("feed-loading").style.display = "flex"
   }
 
-  const res = await fetch(`/api/feed?cursor=${storyCursor}&t=${Date.now()}`)
+  const res = await fetch(`/api/profile?email=${user}&cursor=${storyCursor}&t=${Date.now()}`)
   const data = await res.json()
 
-  const user = localStorage.getItem("user")
+  
 
-  // lọc post của user
-  const filtered = data.posts.filter(p => {
-    const parts = p.split("_")
-    return parts[4] === user
-  })
+  const myPost = data.posts ;
 
   // cache lại
-  storyPostsCache = storyPostsCache.concat(filtered)
+  storyPostsCache = storyPostsCache.concat(myPost)
 
   // cursor vẫn theo toàn bộ feed
   storyCursor = data.nextCursor
 
-  renderStoryPosts(storyPostsCache,data.comments, data.reacts)
-
+  renderStoryPosts(myPost,data.comments, data.reacts)
   if (storyFirstLoad) {
     document.getElementById("feed-loading").style.display = "none"
     storyFirstLoad = false
