@@ -960,12 +960,13 @@ async function loadProfilePosts(email) {
   const data = await res.json()
 
 
-  profilePostsCache = profilePostsCache.concat(data.posts)
+  const newPosts = data.posts
+  profilePostsCache = profilePostsCache.concat(newPosts)
   profileCommentsCache = profileCommentsCache.concat(data.comments)
   profileReactsCache = profileReactsCache.concat(data.reacts)
   profileCursor = data.nextCursor
-
-  renderProfilePosts(profilePostsCache,profileCommentsCache, profileReactsCache)
+   
+  renderProfilePosts(newPosts,profileCommentsCache, profileReactsCache)
 
   if (profileFirstLoad) {
     document.getElementById("feed-loading").style.display = "none"
