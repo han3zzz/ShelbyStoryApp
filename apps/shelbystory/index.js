@@ -850,7 +850,7 @@ function renderStoryPosts(posts, comments, reacts) {
     const id = parts[1]
 
     // 🔥 chống trùng
-    if (document.querySelector(`[data-id="${id}"]`)) continue
+    // if (document.querySelector(`[data-id="${id}"]`)) continue
 
     const timee = parts[2]
     const author = parts[4]
