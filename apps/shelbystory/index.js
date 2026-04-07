@@ -61,7 +61,7 @@ function renderPosts(posts) {
     const html = `
       <section class="post" data-id="${id}">
         <div class="background">
-          <img src="/api/image/${id}">
+          <img src="./assets/background1.jpg">
         </div>
         <div class="content">
           <img src="/api/image/${id}" class="media" loading="lazy">
@@ -396,7 +396,7 @@ fileInput.onchange = () => {
                 // 🔥 RESET UI
         document.getElementById("storyFileInput").value = "";
         document.getElementById("storyCaption").value = "";
-
+        firstLoad = true
         const img = document.getElementById("storyPreviewImage");
         const video = document.getElementById("storyPreviewVideo");
 
