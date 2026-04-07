@@ -396,7 +396,6 @@ fileInput.onchange = () => {
                 // 🔥 RESET UI
         document.getElementById("storyFileInput").value = "";
         document.getElementById("storyCaption").value = "";
-        firstLoad = true
         const img = document.getElementById("storyPreviewImage");
         const video = document.getElementById("storyPreviewVideo");
 
@@ -406,7 +405,13 @@ fileInput.onchange = () => {
         video.src = "";
         video.style.display = "none";
         document.getElementById("storyModal").style.display = "none";
-          loadPosts();
+        allPosts = []
+        cursor = 0
+        firstLoad = true
+
+        document.getElementById("feed").innerHTML = ""
+
+        await loadPosts()
           
 
         }catch(e){
