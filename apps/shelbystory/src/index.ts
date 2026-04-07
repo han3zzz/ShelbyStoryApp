@@ -97,7 +97,7 @@ app.post("/api/upload",verifyToken, upload.single("file"), async (req, res) => {
     }
     /* check file type */
 
-    const allowedTypes = ["image/png","image/jpeg","image/webp","video/mp4"];
+    const allowedTypes = ["image/png","image/jpeg","image/webp"];
 
     if(!allowedTypes.includes(file.mimetype)){
       return res.status(400).json({error:"File type not supported"});
