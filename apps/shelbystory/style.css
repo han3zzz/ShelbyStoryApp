@@ -1707,7 +1707,7 @@ credit .author{
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 
   transition: all 0.3s ease;
-  z-index: 99999;
+  z-index: 199;
 }
 #infoBtn:hover {
   background: #ff4da6;
