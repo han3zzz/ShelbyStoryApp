@@ -1775,6 +1775,9 @@ credit .author{
 #xBtn {
   opacity: 0.5;
 }
+#xBtn a{
+  color: white;
+}
 
 #xBtn:hover {
   opacity: 1;
@@ -1808,6 +1811,9 @@ credit .author{
 #discordBtn:hover {
   background: #ff4da6;
   transform: scale(1.1);
+}
+#discordBtn a{
+  color: white;
 }
 #discordBtn {
   opacity: 0.5;
