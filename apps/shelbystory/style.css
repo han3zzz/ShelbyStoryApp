@@ -1764,7 +1764,7 @@ credit .author{
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 
   transition: all 0.3s ease;
-  z-index: 99999;
+  z-index: 199;
   display: flex;
   gap: 10px; /* khoảng cách giữa 2 icon */
 }
@@ -1801,7 +1801,7 @@ credit .author{
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 
   transition: all 0.3s ease;
-  z-index: 99999;
+  z-index: 199;
   display: flex;
   gap: 10px; /* khoảng cách giữa 2 icon */
 }
