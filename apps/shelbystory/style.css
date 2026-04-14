@@ -1683,3 +1683,136 @@ credit .author{
 ::-webkit-scrollbar-thumb:hover {
   background: #666;
 }
+
+
+#infoBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+
+  background: rgba(0, 123, 255, 0.3); /* nền mờ */
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  backdrop-filter: blur(5px); /* hiệu ứng kính mờ */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  transition: all 0.3s ease;
+  z-index: 99999;
+}
+#infoBtn:hover {
+  background: #ff4da6;
+  transform: scale(1.1);
+}
+#infoBtn {
+  opacity: 0.5;
+}
+
+#infoBtn:hover {
+  opacity: 1;
+}
+.swal-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.swal-content {
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #444;
+}
+
+.swal-text p {
+  margin: 10px 0;
+}
+
+.swal2-confirm {
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+}
+#xBtn {
+  position: fixed;
+  bottom: 30px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+
+  background: rgba(0, 123, 255, 0.3); /* nền mờ */
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  backdrop-filter: blur(5px); /* hiệu ứng kính mờ */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  transition: all 0.3s ease;
+  z-index: 99999;
+  display: flex;
+  gap: 10px; /* khoảng cách giữa 2 icon */
+}
+#xBtn:hover {
+  background: #ff4da6;
+  transform: scale(1.1);
+}
+#xBtn {
+  opacity: 0.5;
+}
+
+#xBtn:hover {
+  opacity: 1;
+}
+#discordBtn {
+  position: fixed;
+  bottom: 30px;
+  left: 60px;
+  width: 30px;
+  height: 30px;
+
+  background: rgba(0, 123, 255, 0.3); /* nền mờ */
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  backdrop-filter: blur(5px); /* hiệu ứng kính mờ */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  transition: all 0.3s ease;
+  z-index: 99999;
+  display: flex;
+  gap: 10px; /* khoảng cách giữa 2 icon */
+}
+#discordBtn:hover {
+  background: #ff4da6;
+  transform: scale(1.1);
+}
+#discordBtn {
+  opacity: 0.5;
+}
+
+#discordBtn:hover {
+  opacity: 1;
+}
