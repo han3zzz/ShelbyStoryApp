@@ -1170,3 +1170,31 @@ function reloadAssets() {
 
   document.body.appendChild(newScript);
 }
+
+function info() {
+  Swal.fire({
+    title: "Shelby Story App Infomation",
+    html: `
+      <div class="swal-text">
+        <p><b>Shelby Story</b> is a minimalist social dApp focused on image sharing.</p>
+
+        <p>Users can upload photos, post their moments, and interact through likes and comments in a clean, distraction-free environment.</p>
+
+        <p>The entire platform including images, likes, and comments is built and stored on <b>Shelby</b> — a next-generation decentralized storage network engineered for high-speed access and reliability.</p>
+
+        <p>By combining simple social features with powerful decentralized infrastructure, Shelby Story delivers a fast, censorship-resistant experience without compromising performance.</p>
+
+        <p><i>Simple by design. Decentralized by nature.</i></p>
+
+        <p style="color:#888; font-size:13px;">
+          All data is stored on Shelby for 30 days since the story was posted.
+        </p>
+      </div>
+    `,
+    confirmButtonText: "OK",
+    customClass: {
+      title: "swal-title",
+      htmlContainer: "swal-content"
+    }
+  });
+}
