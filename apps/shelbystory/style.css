@@ -67,7 +67,7 @@ body{
 .logo{
   font-size:22px;
   font-weight:700;
-
+  font-family: "Luckiest Guy", cursive;
   background:linear-gradient(
     90deg,
     #ff4da6,
