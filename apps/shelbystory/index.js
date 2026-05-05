@@ -1398,3 +1398,24 @@ function getExtension(base64) {
 
   return "png"
 }
+
+function search() {
+  Swal.fire({
+    title: "Please enter your username",
+    input: "text",
+    showCancelButton: true,
+    confirmButtonText: "Search",
+
+    preConfirm: (user) => {
+      if (!user) {
+        Swal.showValidationMessage("Please enter a username");
+        return false;
+      }
+      return user; // 
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      openProfile(result.value);
+    }
+  });
+}
