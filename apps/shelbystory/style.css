@@ -65,7 +65,7 @@ body{
   scroll-snap-type:y mandatory;
 }
 .logo{
-  font-size:22px;
+  font-size:32px;
   font-weight:700;
   font-family: "Luckiest Guy", cursive;
   background:linear-gradient(
@@ -1162,6 +1162,7 @@ credit .author{
     .logo {
    padding-top: 15px;
       z-index: 1001;
+      font-size : 22px;
     }
   .media{
     height:320px;
@@ -1310,6 +1311,7 @@ credit .author{
          .logo {
         padding-top: 15px;
            z-index: 1001;
+           font-size : 22px;
     }
   .navbar{
     padding:10px 12px;
@@ -1541,7 +1543,7 @@ credit .author{
 
   .logo{
     padding-top: 15px;
-    font-size:16px;
+    font-size : 22px;
     z-index: 1001;
   } 
    .feed{
