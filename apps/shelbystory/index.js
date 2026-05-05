@@ -1198,3 +1198,202 @@ function info() {
     }
   });
 }
+
+const mainModal = document.getElementById("storyModal")
+const aiModal = document.getElementById("storyAIModal")
+
+document.getElementById("open-ai-modal-btn").onclick = () => {
+  mainModal.style.display = "none"
+  aiModal.style.display = "flex"
+}
+
+document.getElementById("storyAICloseBtn").onclick = () => {
+  aiModal.style.display = "none"
+}
+
+document.getElementById("storyCloseBtn").onclick = () => {
+  mainModal.style.display = "none"
+}
+
+
+const generateBtn = document.getElementById("generateAIBtn")
+const ailoading = document.getElementById("aiLoading")
+const img = document.getElementById("aiGeneratedImage")
+const text = document.getElementById("aiPlaceholderText")
+const uploadAIStoryBtn = document.getElementById("uploadAIStoryBtn")
+let currentAIImage = null
+generateBtn.onclick = async () => {
+  const prompt = document.getElementById("aiPrompt").value.trim()
+
+  ailoading.style.display = "block"
+
+  text.style.display = "block"
+  text.innerText = "Generating..."
+
+  img.style.display = "none"  
+
+  try {
+    const res = await fetch("/api/imageai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ prompt })
+    })
+
+      if (!res.ok) {
+          const errorData = await res.json();
+          Swal.close();
+          Swal.fire({
+            title: errorData.error, // hiển thị lỗi
+            icon: "error",
+            customClass:{
+            container:"my-swal"
+  }
+          });
+          return;
+        }
+    const data = await res.json()
+
+    currentAIImage = data.image
+    img.src = data.image
+    img.style.display = "block"
+    text.style.display = "none"
+
+  } catch (err) {
+    text.innerText = "Generate failed"
+  }
+
+  ailoading.style.display = "none"
+}
+   // Upload AI khi click button
+    uploadAIStoryBtn.addEventListener('click', async () => {
+      if (!currentAIImage || !currentAIImage.startsWith("data:image")) {
+        Swal.fire({
+          title: "Invalid AI image",
+          icon: "error",
+          customClass:{
+            container:"my-swal"
+  }
+        })
+        return
+      }
+      const ext = getExtension(currentAIImage)
+      const file = base64ToFile(currentAIImage, `ai-${Date.now()}.${ext}`)
+      uploadAIStoryBtn.disabled = true;
+      Swal.fire({
+        title: "Uploading Story...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          
+        },
+        customClass:{
+            container:"my-swal"
+  }
+      });
+        const captionStoryAI = document.getElementById('storyAICaption').value;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('caption',captionStoryAI);
+      formData.append("author",authorStory);
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers:{
+          Authorization:"Bearer "+token
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          Swal.close();
+          Swal.fire({
+            title: errorData.error, // hiển thị lỗi
+            icon: "error",
+            customClass:{
+            container:"my-swal"
+  }
+          });
+          return;
+        }
+
+        const data = await response.json();
+        Swal.close();
+         Swal.fire({
+            title: "Upload Success !",
+            icon: "success",
+            customClass:{
+            container:"my-swal"
+  }
+          });
+        document.getElementById("storyAICaption").value = "";
+
+
+        document.getElementById("storyAIModal").style.display = "none";
+        allPosts = []
+        cursor = 0
+        firstLoad = true
+
+        document.getElementById("feed").innerHTML = ""
+
+        await loadPosts()
+          
+
+        }catch(e){
+            Swal.fire({
+            title: e.message, // hiển thị lỗi
+            icon: "error"
+          });
+        }
+                finally {
+                uploadAIStoryBtn.disabled = false;
+            }
+            });
+
+function base64ToFile(base64, filename) {
+  if (!base64 || !base64.includes("base64,")) {
+    throw new Error("Invalid base64 image")
+  }
+
+  const arr = base64.split(',')
+  if (arr.length < 2) {
+    throw new Error("Malformed base64 string")
+  }
+
+  const mimeMatch = arr[0].match(/:(.*?);/)
+  if (!mimeMatch) {
+    throw new Error("Cannot detect mime type")
+  }
+
+  const mime = mimeMatch[1]
+  const bstr = atob(arr[1])
+  const u8arr = new Uint8Array(bstr.length)
+
+  for (let i = 0; i < bstr.length; i++) {
+    u8arr[i] = bstr.charCodeAt(i)
+  }
+
+  return new File([u8arr], filename, { type: mime })
+}
+
+function getExtension(base64) {
+  if (!base64 || typeof base64 !== "string") return "png"
+
+  const match = base64.match(/^data:(.*?);base64,/)
+
+  if (!match) {
+    console.warn("Invalid base64 format:", base64)
+    return "png" // fallback
+  }
+
+  const mime = match[1]
+
+  if (mime.includes("png")) return "png"
+  if (mime.includes("jpeg")) return "jpg"
+  if (mime.includes("webp")) return "webp"
+
+  return "png"
+}
