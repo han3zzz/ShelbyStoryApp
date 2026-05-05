@@ -794,3 +794,51 @@ async function getAllBlobs(account: string) {
 
   return allBlobs;
 }
+app.post("/api/imageai", verifyToken, async (req, res) => {
+  try {
+    const author = (req as any).user.email.email;
+    const prompt = req.body.prompt;
+
+    if (!author) {
+      return res.status(400).json({ error: "Author required" });
+    }
+
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt required" });
+    }
+
+    const response = await fetch("https://divine-limit-c8fb.handevtb.workers.dev", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer 25032003",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      return res.status(500).json({ error: "AI API failed", detail: text });
+    }
+
+
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const contentType = response.headers.get("content-type") || "image/png";
+
+    const base64 = buffer.toString("base64");
+
+    const imageBase64 = `data:${contentType};base64,${base64}`;
+
+    // TRẢ VỀ
+    res.json({
+      image: imageBase64,
+      prompt
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Generate image failed!" });
+  }
+});
