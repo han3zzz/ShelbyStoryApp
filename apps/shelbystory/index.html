@@ -135,6 +135,63 @@
   </div>
 
 </div>
+   <div class="story-ai-modal-overlay" id="storyAIModal">
+
+  <div class="story-ai-modal-box">
+
+    <span class="story-modal-close" id="storyAICloseBtn">✕</span>
+
+    <h2 class="story-modal-title">
+      Upload Story with AI <i class="fa-solid fa-robot"></i>
+    </h2>
+
+    <!-- 🔹 PROMPT -->
+    <textarea
+      id="aiPrompt"
+      class="story-caption"
+      placeholder="Describe the image you want to generate..."
+    ></textarea>
+
+    <button class="story-upload-btn" id="generateAIBtn">
+      🎨 Generate Image
+    </button>
+
+    <div class="story-upload-area">
+
+      <div class="story-preview-box" id="aiPreviewBox">
+
+        <img
+          id="aiGeneratedImage"
+          class="story-preview-image"
+          style="display:none"
+        >
+
+        <!-- placeholder -->
+        <div class="story-upload-text" id="aiPlaceholderText">
+          Your AI image will appear here
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="aiLoading" style="display:none; text-align:center;">
+      Generating...
+    </div>
+
+    <textarea
+      id="storyAICaption"
+      class="story-caption"
+      placeholder="Write a caption..."
+    ></textarea>
+
+    <button class="story-upload-btn" id="uploadAIStoryBtn">
+      Upload
+    </button>
+
+  </div>
+
+</div>
 <div class="post-status-box" id="postStatus">
   <div class="post-status-content">
     <div class="post-spinner"></div>
