@@ -1121,20 +1121,21 @@ const menu = document.querySelector(".top-actions");
    const btnIcon = document.querySelector(".menu-toggle i");
   const btnConnect = document.getElementById("connect");
   const btnNofi = document.getElementById("btnNofi");
+  const btnSearch = document.getElementById("btnSearch");
   if(isOpen){
     btnIcon.classList.remove("fa-bars");
     btnIcon.classList.add("fa-xmark");
-    btnConnect.style.display = "none";
     btnNofi.style.display = "none";
-    btnConnect.style.transition = "all 0.5s ease";
+    btnSearch.style.display = "none";
     btnNofi.style.transition = "all 0.5s ease";
+    btnSearch.style.transition = "all 0.5s ease";
   }else{
     btnIcon.classList.remove("fa-xmark");
     btnIcon.classList.add("fa-bars");
-    btnConnect.style.display = "block";
     btnNofi.style.display = "block";
-    btnConnect.style.transition = "all 0.5s ease";
+    btnSearch.style.display = "block";
     btnNofi.style.transition = "all 0.5s ease";
+    btnSearch.style.transition = "all 0.5s ease";
   }
   document.querySelectorAll(".swipe").forEach(el => {
   el.style.transition = "all 0.3s ease";
