@@ -694,7 +694,7 @@ credit .author{
   overflow:hidden;
 
   background:#141414;
-
+  margin-top: 10px;
 }
 
 .story-preview-box:hover{
