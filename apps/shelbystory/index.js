@@ -113,6 +113,13 @@ function setupInfiniteScroll() {
 // lần đầu load 5 post
 loadPosts()
 
+function resetFeed(){
+  allPosts = [];
+  cursor = 0;
+  firstLoad = true;
+  document.getElementById("feed").innerHTML = "";
+}
+
 let tokenClient;
 
 window.onload = () => {
@@ -162,6 +169,7 @@ document.getElementById("connect").onclick = () => {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
        sessionStorage.clear();
+      resetFeed();
       loadPosts();
 
         // 🔥 xoá header nếu có
@@ -221,7 +229,8 @@ async function getUserInfo(token){
   
   localStorage.setItem("token",loginData.token);
   localStorage.setItem("user", loginData.email.email);
-  loadPosts();
+  resetFeed();
+   await loadPosts();
   Swal.fire({
     title:"Login Success!",
     icon:"success"
@@ -238,9 +247,16 @@ function showUser(user) {
     user;
       storyBtn.style.display = "block";
       myStoryy.style.display = "block";
-      Nofibtn.style.display = "block";
+        const menu = document.querySelector(".top-actions");
+
+  if (menu.classList.contains("active")) {
+    Nofibtn.style.display = "none";
+  } else {
+    Nofibtn.style.display = "block";
+  }
       Menubtn.classList.remove("hidden");
 }
+
 
 
 
@@ -1122,6 +1138,8 @@ const menu = document.querySelector(".top-actions");
   const btnConnect = document.getElementById("connect");
   const btnNofi = document.getElementById("btnNofi");
   const btnSearch = document.getElementById("btnSearch");
+   const user = localStorage.getItem("user");
+    btnNofi.style.display = "none";
   if(isOpen){
     btnIcon.classList.remove("fa-bars");
     btnIcon.classList.add("fa-xmark");
@@ -1132,7 +1150,13 @@ const menu = document.querySelector(".top-actions");
   }else{
     btnIcon.classList.remove("fa-xmark");
     btnIcon.classList.add("fa-bars");
-    btnNofi.style.display = "block";
+    if(user != null){
+      btnNofi.style.display = "block";
+    }
+    else{
+      btnNofi.style.display = "none";
+    }
+   
     btnSearch.style.display = "block";
     btnNofi.style.transition = "all 0.5s ease";
     btnSearch.style.transition = "all 0.5s ease";
@@ -1142,7 +1166,7 @@ const menu = document.querySelector(".top-actions");
 
   if(isOpen){
     el.style.opacity = "0";
-    el.style.transform = "translateX(-50%) translateY(15px)"; // ✅ giữ căn giữa
+    el.style.transform = "translateX(-50%) translateY(15px)";
     el.style.pointerEvents = "none";
   }else{
     el.style.opacity = "1";
