@@ -148,7 +148,6 @@ const Menubtn = document.getElementById("btnMenu");
 storyBtn.style.display = "none";
 myStoryy.style.display = "none";
 Nofibtn.style.display = "none";
-Menubtn.classList.add("hidden");
 document.getElementById("connect").onclick = () => {
 
   const savedUser = localStorage.getItem("user");
@@ -187,7 +186,6 @@ document.getElementById("connect").onclick = () => {
       storyBtn.style.display = "none";
       myStoryy.style.display = "none";
       Nofibtn.style.display = "none";
-      Menubtn.classList.add("hidden");
       document.getElementById("commentsend").innerHTML = '';
     
   }
