@@ -1253,6 +1253,7 @@ generateBtn.onclick = async () => {
             container:"my-swal"
   }
           });
+        text.innerText = "Your AI image will appear here"
           return;
         }
     const data = await res.json()
