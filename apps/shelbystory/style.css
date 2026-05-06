@@ -631,7 +631,7 @@ credit .author{
   font-weight:600;
 
   cursor:pointer;
-
+  font-family: "Poppins", sans-serif;
   transition:0.25s;
 
 }
