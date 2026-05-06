@@ -195,14 +195,16 @@ body{
 }
 .actions .like{
   color:#ff4da6;
-
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
   box-shadow:
     0 0 8px rgba(255,77,166,0.6),
     0 0 16px rgba(255,77,166,0.4);
 }
 .actions .comment{
   color:#6aa7ff;
-
+ font-family: "Poppins", sans-serif;
+  font-weight: 700;
   box-shadow:
     0 0 8px rgba(106,167,255,0.6),
     0 0 16px rgba(106,167,255,0.4);
@@ -821,6 +823,8 @@ credit .author{
   border-radius:8px;
   cursor:pointer;
   transition:all 0.25s ease;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
 }
 
 .like.active{
@@ -828,6 +832,8 @@ credit .author{
   color:white;
   box-shadow:0 4px 12px rgba(255,0,120,0.4);
   transform:scale(1.05);
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
 }
 
 .like.active:hover{
