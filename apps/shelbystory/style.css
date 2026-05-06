@@ -1778,13 +1778,15 @@ credit .author{
   font-size: 22px;
   font-weight: 600;
   letter-spacing: 0.5px;
+  font-family: "Poppins", sans-serif;
 }
 
 .swal-content {
   text-align: left;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.7;
   color: #444;
+  font-family: "Poppins", sans-serif;
 }
 
 .swal-text p {
