@@ -808,7 +808,7 @@ credit .author{
   padding:6px 14px;
   border-radius:20px;
 
-
+  font-family: "Poppins", sans-serif;
   pointer-events:auto;
   user-select:none;
 }
