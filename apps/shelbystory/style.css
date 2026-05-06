@@ -992,7 +992,7 @@ credit .author{
   top:0;
   left:0;
   width:100%;
-
+  font-family: "Poppins", sans-serif;
   padding:14px 18px;
 
   display:flex;
