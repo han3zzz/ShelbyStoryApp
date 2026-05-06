@@ -560,6 +560,7 @@ credit .author{
 .story-modal-title{
   color:white;
   margin-bottom:10px;
+  font-family: "Poppins", sans-serif;
 }
 
 /* close */
@@ -603,6 +604,7 @@ credit .author{
   color:white;
 
   resize:none;
+  font-family: "Poppins", sans-serif;
 
 }
 
