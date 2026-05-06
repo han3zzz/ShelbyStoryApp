@@ -1442,3 +1442,49 @@ function search() {
     }
   });
 }
+
+// ===== scroll =====
+window.addEventListener("wheel", function (e) {
+  const box = document.getElementById("notifyBox")
+
+  // nếu đang scroll trong notifyBox → bỏ qua
+  if (box && box.contains(e.target)) return
+
+  closeNotify()
+})
+
+window.addEventListener("touchmove", function (e) {
+  const box = document.getElementById("notifyBox")
+
+  if (box && box.contains(e.target)) return
+
+  closeNotify()
+})
+
+function closeNotify() {
+  const box = document.getElementById("notifyBox")
+  if (box && box.classList.contains("open")) {
+    box.classList.remove("open")
+  }
+}
+
+// ===== click ngoài =====
+document.addEventListener("pointerdown", function (e) {
+  const box = document.getElementById("notifyBox")
+  const btn = document.getElementById("notifyBtn")
+
+  if (!box || !btn) return
+
+  if (!box.contains(e.target) && !btn.contains(e.target)) {
+    closeNotify()
+  }
+}, true)
+
+// ===== click vào feed =====
+const feed1 = document.querySelector(".feed")
+
+if (feed1) {
+  feed1.addEventListener("pointerdown", function () {
+    closeNotify()
+  })
+}
