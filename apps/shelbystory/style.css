@@ -1135,12 +1135,15 @@ credit .author{
 
   background:linear-gradient(135deg,#ff3f8e,#ff6aa9);
   color:white;
+   font-family: "Poppins", sans-serif;
 
 }
 #notifyList{
 
   overflow-y:auto;
   max-height:300px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
 
 }
 .notify-item{
